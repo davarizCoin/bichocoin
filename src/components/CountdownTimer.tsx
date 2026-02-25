@@ -135,7 +135,7 @@ const CountdownTimer = ({ schedule }: Props) => {
       <p className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
         Próximo Sorteio
       </p>
-      <p className="text-xs text-muted-foreground text-center">{nextDrawDate}</p>
+      <p className="text-xs text-muted-foreground text-center">{nextDrawDate} <span className="text-[10px] opacity-70">(DF - Brasil)</span></p>
       <div className="flex justify-center gap-3">
         <TimeBox value={days} label="Dias" />
         <TimeBox value={hours} label="Horas" />

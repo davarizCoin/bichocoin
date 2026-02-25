@@ -2,9 +2,11 @@ import { useState } from "react";
 import { lotteryGames } from "@/data/games";
 import Header from "@/components/Header";
 import BichoGame from "@/components/BichoGame";
+import DragaoSorteGame from "@/components/DragaoSorteGame";
 import LotteryGame from "@/components/LotteryGame";
 import EmailModal from "@/components/EmailModal";
 import HowToPlayModal, { type GameRulesKey } from "@/components/HowToPlayModal";
+import InstallAppModal from "@/components/InstallAppModal";
 import { HelpCircle, Facebook, Instagram, Twitter, Send, Mail, Youtube, Apple, Smartphone } from "lucide-react";
 
 import jogobichoImg from "@/assets/jogobicho.jpg";
@@ -16,6 +18,7 @@ import powerballImg from "@/assets/powerball.jpg";
 import megamillionImg from "@/assets/megamillion.jpg";
 import lottoamericaImg from "@/assets/lottoamerica.jpg";
 import twoby2Img from "@/assets/2by2.jpg";
+import dragaoImg from "@/assets/Dragao_da_Sorte.jpg";
 
 type ActiveGame = null | "bicho" | string;
 
@@ -36,6 +39,27 @@ const Index = () => {
   const [dark, setDark] = useState(false);
   const [activeGame, setActiveGame] = useState<ActiveGame>(null);
   const [howToPlay, setHowToPlay] = useState<GameRulesKey | null>(null);
+  const [showInstallModal, setShowInstallModal] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useState(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    });
+  });
+
+  const handleAndroidInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      alert("App já instalado ou indisponível no seu navegador (tente pelo Chrome).");
+    }
+  };
 
   const toggleDark = () => {
     setDark((d) => {
@@ -75,6 +99,30 @@ const Index = () => {
                 <button
                   onClick={() => setHowToPlay("bicho")}
                   className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <HelpCircle className="h-3 w-3" /> Como Jogar
+                </button>
+              </div>
+            </section>
+
+            <div className="border-t border-border" />
+
+            {/* Dragão da Sorte */}
+            <section className="space-y-3">
+              <h3 className="text-xs text-red-500 uppercase tracking-widest text-center font-bold">
+                🐉 Dragão da Sorte
+              </h3>
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  onClick={() => setActiveGame("dragao-sorte")}
+                  className="rounded-xl overflow-hidden w-full max-w-xs transition-all shadow-md hover:scale-105 hover:shadow-lg border border-red-500/30"
+                >
+                  <img src={dragaoImg} alt="Dragão da Sorte" className="w-full h-auto object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.add('bg-red-900', 'min-h-[120px]', 'flex', 'items-center', 'justify-center'); e.currentTarget.parentElement!.innerHTML = '<span class="text-white font-bold">Imagem Pendente (Dragao_da_Sorte.jpg)</span>'; }} />
+                </button>
+
+                <button
+                  onClick={() => setHowToPlay("dragao-sorte")}
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-red-500 transition-colors mt-1"
                 >
                   <HelpCircle className="h-3 w-3" /> Como Jogar
                 </button>
@@ -172,6 +220,15 @@ const Index = () => {
           />
         )}
 
+        {activeGame === "dragao-sorte" && email && (
+          <DragaoSorteGame
+            email={email}
+            onBack={() => setActiveGame(null)}
+            initialCategory="grupo"
+            promoCode={promoCode}
+          />
+        )}
+
         {activeLottery && email && (
           <LotteryGame
             game={activeLottery}
@@ -217,11 +274,11 @@ const Index = () => {
 
               {/* Apps Download */}
               <div className="flex items-center gap-3">
-                <button onClick={() => alert("App Android em breve!")} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-green-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
+                <button onClick={handleAndroidInstall} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-green-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
                   <Smartphone className="w-4 h-4" />
                   <span className="text-xs font-bold">Android</span>
                 </button>
-                <button onClick={() => alert("App iOS em breve!")} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-zinc-800 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
+                <button onClick={() => setShowInstallModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-zinc-800 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
                   <Apple className="w-4 h-4" />
                   <span className="text-xs font-bold">Apple</span>
                 </button>
@@ -233,6 +290,8 @@ const Index = () => {
         {howToPlay && (
           <HowToPlayModal open={!!howToPlay} onClose={() => setHowToPlay(null)} gameKey={howToPlay} />
         )}
+
+        <InstallAppModal open={showInstallModal} onClose={() => setShowInstallModal(false)} />
       </main>
     </div>
   );

@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ExternalLink } from "lucide-react";
 
-export type GameRulesKey = "bicho" | "quina" | "mega-sena" | "dia-de-sorte" | "mais-milionaria" | "powerball" | "mega-millions" | "lotto-america" | "2by2";
+export type GameRulesKey = "bicho" | "dragao-sorte" | "quina" | "mega-sena" | "dia-de-sorte" | "mais-milionaria" | "powerball" | "mega-millions" | "lotto-america" | "2by2";
 
 interface GameRules {
   title: string;
@@ -11,7 +11,9 @@ interface GameRules {
   resultLabel: string;
 }
 
-const gameRules: Record<GameRulesKey, GameRules> = {
+import tabelaDragao from "@/assets/tabela_dragao.jpg";
+
+const gameRules: Record<GameRulesKey, GameRules & { image?: string }> = {
   "bicho": {
     title: "Jogo do Bicho",
     emoji: "🎲",
@@ -27,6 +29,20 @@ const gameRules: Record<GameRulesKey, GameRules> = {
     ],
     resultUrl: "https://www.jfrj.jus.br",
     resultLabel: "Consultar resultado",
+  },
+  "dragao-sorte": {
+    title: "Dragão da Sorte",
+    emoji: "🐉",
+    rules: [
+      "Uma categoria de jogo exclusivo criado por nós que trará grandes emoções!",
+      "Você pode jogar no Grupo ou na Dezena.",
+      "No Grupo, temos 12 bichos do Horóscopo Chinês e está pagando 8x.",
+      "Na Dezena, você aposta em números específicos e está pagando 60x.",
+      "O sorteio rola 3 vezes ao dia."
+    ],
+    resultUrl: tabelaDragao,
+    resultLabel: "Abrir Tabela do Horóscopo Chinês (Maior)",
+    image: tabelaDragao,
   },
   quina: {
     title: "Quina",
@@ -145,6 +161,11 @@ const HowToPlayModal = ({ open, onClose, gameKey }: Props) => {
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-3 py-2">
+          {rules.image && (
+            <div className="flex justify-center mb-2">
+              <img src={rules.image} alt={`Tabela ${rules.title}`} className="rounded-xl border border-border/50 max-h-48 w-auto object-contain shadow-sm" />
+            </div>
+          )}
           <ul className="space-y-2">
             {rules.rules.map((rule, i) => (
               <li key={i} className="flex gap-2 text-sm text-foreground">

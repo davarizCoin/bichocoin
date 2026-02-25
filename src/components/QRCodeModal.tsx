@@ -20,16 +20,27 @@ const bichoMultipliers: Record<string, { label: string; multiplier: number }> = 
   milhar: { label: "Milhar", multiplier: 6000 },
 };
 
+const dragaoMultipliers: Record<string, { label: string; multiplier: number }> = {
+  grupo: { label: "Grupo (Dragão)", multiplier: 8 },
+  dezena: { label: "Dezena (Dragão)", multiplier: 60 },
+};
+
 const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoCategory }: Props) => {
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedBet, setCopiedBet] = useState(false);
 
-  const qrConfig = gameId === "bicho"
+  const qrConfig = (gameId === "bicho" || gameId === "dragaodasorte")
     ? bichoQRCodes[amount]
     : lotteryQRCodes[gameId];
 
-  const bichoInfo = gameId === "bicho" && bichoCategory ? bichoMultipliers[bichoCategory] : null;
-  const potentialWin = bichoInfo ? amount * bichoInfo.multiplier : 0;
+  let betInfo = null;
+  if (gameId === "bicho" && bichoCategory) {
+    betInfo = bichoMultipliers[bichoCategory];
+  } else if (gameId === "dragaodasorte" && bichoCategory) {
+    betInfo = dragaoMultipliers[bichoCategory];
+  }
+
+  const potentialWin = betInfo ? amount * betInfo.multiplier : 0;
 
   const handleCopyCode = async () => {
     if (qrConfig) {
@@ -65,9 +76,9 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
             </div>
           )}
 
-          {bichoInfo && (
+          {betInfo && (
             <p className="text-center text-xs text-muted-foreground">
-              {bichoInfo.label} — Se acertar: <span className="font-bold text-gold">R${potentialWin}</span> ({bichoInfo.multiplier}x)
+              {betInfo.label} — Se acertar: <span className="font-bold text-gold">R${potentialWin}</span> ({betInfo.multiplier}x)
             </p>
           )}
 
