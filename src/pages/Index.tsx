@@ -5,7 +5,7 @@ import BichoGame from "@/components/BichoGame";
 import LotteryGame from "@/components/LotteryGame";
 import EmailModal from "@/components/EmailModal";
 import HowToPlayModal, { type GameRulesKey } from "@/components/HowToPlayModal";
-import { HelpCircle, Facebook, Instagram, Twitter, Send, Mail } from "lucide-react";
+import { HelpCircle, Facebook, Instagram, Twitter, Send, Mail, Youtube, Apple, Smartphone } from "lucide-react";
 
 import jogobichoImg from "@/assets/jogobicho.jpg";
 import quinaImg from "@/assets/quina.jpg";
@@ -136,6 +136,30 @@ const Index = () => {
                 ))}
               </div>
             </section>
+
+            <div className="border-t border-border" />
+
+            {/* Outras Categorias */}
+            <section className="space-y-3">
+              <h3 className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
+                🌟 OUTROS
+              </h3>
+              <div className="flex flex-col items-center gap-1 w-full">
+                <button
+                  onClick={() => window.location.href = "/categorias"}
+                  className="w-full relative overflow-hidden rounded-xl h-16 shadow-md hover:scale-105 hover:shadow-lg transition-transform"
+                  style={{
+                    background: "linear-gradient(180deg, #FFCc00 0%, #FF8C00 100%)",
+                    border: "2px solid #FFA500"
+                  }}
+                >
+                  <div className="absolute inset-x-0 top-0 h-1/2 bg-white/30 rounded-t-lg"></div>
+                  <span className="relative z-10 text-white font-black text-xl italic tracking-wide uppercase drop-shadow-md">
+                    OUTRAS APOSTAS
+                  </span>
+                </button>
+              </div>
+            </section>
           </>
         )}
 
@@ -164,22 +188,44 @@ const Index = () => {
               Apostando como: <span className="font-medium text-foreground">{email}</span>
               {promoCode && <span className="ml-1 text-gold font-bold">({promoCode})</span>}
             </p>
-            <div className="flex items-center justify-center gap-4 py-4">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all hover:scale-110">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all hover:scale-110">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-sky-500 hover:text-white transition-all hover:scale-110">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-blue-400 hover:text-white transition-all hover:scale-110">
-                <Send className="w-5 h-5" />
-              </a>
-              <a href="mailto:contato@bichocoin.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-gray-700 hover:text-white transition-all hover:scale-110">
-                <Mail className="w-5 h-5" />
-              </a>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 py-4">
+              {/* Redes Sociais */}
+              <div className="flex items-center gap-3">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all hover:scale-110">
+                  <Facebook className="w-4 h-4" />
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all hover:scale-110">
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-sky-500 hover:text-white transition-all hover:scale-110">
+                  <Twitter className="w-4 h-4" />
+                </a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-red-600 hover:text-white transition-all hover:scale-110">
+                  <Youtube className="w-4 h-4" />
+                </a>
+                <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-400 hover:text-white transition-all hover:scale-110">
+                  <Send className="w-4 h-4" />
+                </a>
+                <a href="mailto:contato@bichocoin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-gray-700 hover:text-white transition-all hover:scale-110">
+                  <Mail className="w-4 h-4" />
+                </a>
+              </div>
+
+              {/* Divisor Visual */}
+              <div className="hidden md:block w-px h-8 bg-border"></div>
+              <div className="block md:hidden w-16 h-px bg-border my-2"></div>
+
+              {/* Apps Download */}
+              <div className="flex items-center gap-3">
+                <button onClick={() => alert("App Android em breve!")} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-green-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
+                  <Smartphone className="w-4 h-4" />
+                  <span className="text-xs font-bold">Android</span>
+                </button>
+                <button onClick={() => alert("App iOS em breve!")} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-zinc-800 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
+                  <Apple className="w-4 h-4" />
+                  <span className="text-xs font-bold">Apple</span>
+                </button>
+              </div>
             </div>
           </>
         )}
