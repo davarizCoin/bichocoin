@@ -38,10 +38,9 @@ const Sports = () => {
                         </div>
                     </button>
 
-                    {/* Placeholder for others */}
                     <button
-                        onClick={() => alert("Em breve!")}
-                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32 opacity-70"
+                        onClick={() => navigate("/esportes/basquete")}
+                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32"
                     >
                         <span className="text-4xl">🏀</span>
                         <div className="text-center">
@@ -49,8 +48,8 @@ const Sports = () => {
                         </div>
                     </button>
                     <button
-                        onClick={() => alert("Em breve!")}
-                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32 opacity-70"
+                        onClick={() => navigate("/esportes/tenis")}
+                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32"
                     >
                         <span className="text-4xl">🎾</span>
                         <div className="text-center">
@@ -58,12 +57,62 @@ const Sports = () => {
                         </div>
                     </button>
                     <button
-                        onClick={() => alert("Em breve!")}
-                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32 opacity-70"
+                        onClick={() => navigate("/esportes/lutas")}
+                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32"
                     >
                         <span className="text-4xl">🥊</span>
                         <div className="text-center">
                             <h3 className="text-sm font-bold leading-tight">UFC / Boxe</h3>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => navigate("/esportes/motor")}
+                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32"
+                    >
+                        <span className="text-4xl">🏎️</span>
+                        <div className="text-center">
+                            <h3 className="text-sm font-bold leading-tight">Motor</h3>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => navigate("/esportes/esports")}
+                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32"
+                    >
+                        <span className="text-4xl">🎮</span>
+                        <div className="text-center">
+                            <h3 className="text-sm font-bold leading-tight">eSports</h3>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => navigate("/esportes/americanos")}
+                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32"
+                    >
+                        <span className="text-4xl">🏈</span>
+                        <div className="text-center">
+                            <h3 className="text-sm font-bold leading-tight">Americanos</h3>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => navigate("/esportes/volei")}
+                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32"
+                    >
+                        <span className="text-4xl">🏐</span>
+                        <div className="text-center">
+                            <h3 className="text-sm font-bold leading-tight">Vôlei</h3>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => navigate("/esportes/outros")}
+                        className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-32"
+                    >
+                        <span className="text-4xl">🏅</span>
+                        <div className="text-center">
+                            <h3 className="text-sm font-bold leading-tight">Outros</h3>
                         </div>
                     </button>
                 </div>

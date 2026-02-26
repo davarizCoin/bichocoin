@@ -11,6 +11,14 @@ import Sports from "./pages/Sports";
 import Football from "./pages/Football";
 import WorldCup from "./pages/WorldCup";
 import GroupMatches from "./pages/GroupMatches";
+import Basketball from "./pages/Basketball";
+import Tennis from "./pages/Tennis";
+import Fight from "./pages/Fight";
+import Motorsport from "./pages/Motorsport";
+import Volleyball from "./pages/Volleyball";
+import Esports from "./pages/Esports";
+import USSports from "./pages/USSports";
+import OtherSports from "./pages/OtherSports";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +38,14 @@ const App = () => (
           <Route path="/esportes/futebol" element={<Football />} />
           <Route path="/esportes/futebol/copa-do-mundo" element={<WorldCup />} />
           <Route path="/esportes/futebol/copa-do-mundo/:groupSlug" element={<GroupMatches />} />
+          <Route path="/esportes/basquete" element={<Basketball />} />
+          <Route path="/esportes/tenis" element={<Tennis />} />
+          <Route path="/esportes/lutas" element={<Fight />} />
+          <Route path="/esportes/motor" element={<Motorsport />} />
+          <Route path="/esportes/volei" element={<Volleyball />} />
+          <Route path="/esportes/esports" element={<Esports />} />
+          <Route path="/esportes/americanos" element={<USSports />} />
+          <Route path="/esportes/outros" element={<OtherSports />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
