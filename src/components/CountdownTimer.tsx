@@ -34,19 +34,28 @@ export const useBettingStatus = (schedule: DrawSchedule) => {
       if (schedule.drawDays.includes(day)) {
         for (const draw of schedule.drawTimes) {
           const drawMins = draw.hour * 60 + draw.minute;
-          const closeMins = drawMins - 30;
-          const reopenMins = drawMins + 120; // 2h locked
+          const closeMins = drawMins - 10;
+          const reopenMins = drawMins + 10;
 
           if (mins >= closeMins && mins < reopenMins) {
+            // Need to return exactly when it reopens
+            const reopenDate = new Date(now);
+            reopenDate.setHours(draw.hour, draw.minute + 10, 0, 0);
             setBettingOpen(false);
-            return;
+            return reopenDate;
           }
         }
       }
       setBettingOpen(true);
+      return null;
     };
-    check();
-    const interval = setInterval(check, 10000);
+
+    // Check initial state
+    let reopenDate = check();
+
+    const interval = setInterval(() => {
+      reopenDate = check();
+    }, 1000);
     return () => clearInterval(interval);
   }, [schedule]);
 
@@ -74,6 +83,8 @@ const CountdownTimer = ({ schedule }: Props) => {
   const [closed, setClosed] = useState(false);
   const [nextDrawDate, setNextDrawDate] = useState("");
 
+  const [pauseTimeLeft, setPauseTimeLeft] = useState<{ minutes: number; seconds: number } | null>(null);
+
   useEffect(() => {
     const tick = () => {
       const now = getBrasiliaTime();
@@ -81,19 +92,35 @@ const CountdownTimer = ({ schedule }: Props) => {
       const mins = now.getHours() * 60 + now.getMinutes();
 
       let isAnyClosed = false;
+      let currentReopenDate: Date | null = null;
 
       if (schedule.drawDays.includes(day)) {
         for (const draw of schedule.drawTimes) {
           const drawMins = draw.hour * 60 + draw.minute;
-          const closeMins = drawMins - 30; // Fechado antes do sorteio (opcional)
-          // Usaremos apenas limite até a hora exata ou mais restrito, igual layout antigo
-          if (mins >= closeMins && mins < drawMins) {
+          const closeMins = drawMins - 10;
+          const reopenMins = drawMins + 10;
+
+          if (mins >= closeMins && mins < reopenMins) {
             isAnyClosed = true;
+            currentReopenDate = new Date(now);
+            currentReopenDate.setHours(draw.hour, draw.minute + 10, 0, 0);
             break;
           }
         }
       }
       setClosed(isAnyClosed);
+
+      if (isAnyClosed && currentReopenDate) {
+        const diff = currentReopenDate.getTime() - now.getTime();
+        if (diff > 0) {
+          setPauseTimeLeft({
+            minutes: Math.floor((diff % 3600000) / 60000),
+            seconds: Math.floor((diff % 60000) / 1000)
+          });
+        }
+      } else {
+        setPauseTimeLeft(null);
+      }
 
       const next = getNextDraw(now, schedule);
       const diff = next.getTime() - now.getTime();
@@ -122,10 +149,15 @@ const CountdownTimer = ({ schedule }: Props) => {
 
   if (closed) {
     return (
-      <div className="text-center bg-card border border-destructive rounded-xl p-4">
+      <div className="text-center bg-card border border-destructive rounded-xl p-4 space-y-2">
         <p className="text-lg font-display font-bold text-destructive animate-pulse">
-          🚫 APOSTAS ENCERRADAS
+          🚫 PAUSA PRA O SORTEIO
         </p>
+        {pauseTimeLeft && (
+          <p className="text-sm text-muted-foreground font-mono">
+            Retorna em: {pauseTimeLeft.minutes.toString().padStart(2, '0')}:{pauseTimeLeft.seconds.toString().padStart(2, '0')}
+          </p>
+        )}
       </div>
     );
   }

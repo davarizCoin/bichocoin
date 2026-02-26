@@ -118,7 +118,8 @@ const BichoGame = ({ email, onBack, initialCategory = "grupo", promoCode = "" }:
             className={`py-2 rounded-md text-sm font-display font-semibold tracking-wide transition-all ${category === cat.key
               ? "bg-primary text-primary-foreground shadow-sm"
               : "text-muted-foreground hover:text-foreground"
-              }`}
+              } ${!bettingOpen ? "opacity-50 cursor-not-allowed" : ""}`}
+            disabled={!bettingOpen}
           >
             {cat.label}
           </button>
@@ -126,11 +127,11 @@ const BichoGame = ({ email, onBack, initialCategory = "grupo", promoCode = "" }:
       </div>
 
       {line && category === "grupo" && !selectedAnimal && (
-        <AnimalGrid line={line} onSelect={setSelectedAnimal} />
+        <AnimalGrid line={line} onSelect={setSelectedAnimal} disabled={!bettingOpen} />
       )}
 
       {line && category === "dezena" && !isDezenaSelected && (
-        <AnimalGrid line={line} onSelect={() => { }} showDezenas onSelectDezena={handleSelectDezena} />
+        <AnimalGrid line={line} onSelect={() => { }} showDezenas onSelectDezena={handleSelectDezena} disabled={!bettingOpen} />
       )}
 
       {line && (category === "centena" || category === "milhar") && !isNumberValid && (
@@ -147,7 +148,8 @@ const BichoGame = ({ email, onBack, initialCategory = "grupo", promoCode = "" }:
               value={numberInput}
               onChange={(e) => setNumberInput(e.target.value.replace(/\D/g, ""))}
               placeholder={category === "centena" ? "000" : "0000"}
-              className="text-center text-2xl font-mono font-bold tracking-widest"
+              disabled={!bettingOpen}
+              className={`text-center text-2xl font-mono font-bold tracking-widest ${!bettingOpen ? "opacity-50 cursor-not-allowed" : ""}`}
             />
           </div>
         </div>

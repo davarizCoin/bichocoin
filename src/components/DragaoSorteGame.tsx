@@ -116,7 +116,8 @@ const DragaoSorteGame = ({ email, onBack, initialCategory = "grupo", promoCode =
                         className={`py-2 rounded-md text-sm font-display font-semibold tracking-wide transition-all ${category === cat.key
                             ? "bg-red-600 text-white shadow-sm"
                             : "text-muted-foreground hover:text-foreground"
-                            }`}
+                            } ${!bettingOpen ? "opacity-50 cursor-not-allowed" : ""}`}
+                        disabled={!bettingOpen}
                     >
                         {cat.label}
                     </button>
@@ -124,11 +125,11 @@ const DragaoSorteGame = ({ email, onBack, initialCategory = "grupo", promoCode =
             </div>
 
             {category === "grupo" && !selectedAnimal && (
-                <DragaoAnimalGrid line={line} onSelect={setSelectedAnimal} />
+                <DragaoAnimalGrid line={line} onSelect={setSelectedAnimal} disabled={!bettingOpen} />
             )}
 
             {category === "dezena" && !isDezenaSelected && (
-                <DragaoAnimalGrid line={line} onSelect={() => { }} showDezenas onSelectDezena={handleSelectDezena} />
+                <DragaoAnimalGrid line={line} onSelect={() => { }} showDezenas onSelectDezena={handleSelectDezena} disabled={!bettingOpen} />
             )}
 
             {showBetSelector && !showQR && (
