@@ -21,7 +21,7 @@ const gameRules: Record<GameRulesKey, GameRules & { image?: string }> = {
       "Bancas Independentes: Cada valor de aposta (Ex: R$10, R$50) cria um pote de prêmios totalmente separado. Seus ganhos são baseados apenas na banca que você escolheu.",
       "Rateio do Prêmio: O valor total arrecadado é dividido igualmente entre todos os apostadores da mesma banca que acertaram a Seleção Vencedora ou o Empate.",
       "Encerramento Seguro: As apostas são encerradas exatamente 1 hora antes do início oficial da partida.",
-      "Pagamento Automático: O prêmio é enviado diretamente utilizando o e-mail cadastrado na aposta."
+      "Pagamento Automático: O prêmio é enviado via Lightning Network diretamente utilizando o e-mail cadastrado na aposta."
     ],
     resultUrl: "",
     resultLabel: ""
