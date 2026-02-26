@@ -11,6 +11,7 @@ interface Props {
   amount: number;
   gameId?: string;
   bichoCategory?: string;
+  customTitle?: string;
 }
 
 const bichoMultipliers: Record<string, { label: string; multiplier: number }> = {
@@ -25,12 +26,12 @@ const dragaoMultipliers: Record<string, { label: string; multiplier: number }> =
   dezena: { label: "Dezena (Dragão)", multiplier: 60 },
 };
 
-const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoCategory }: Props) => {
+const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoCategory, customTitle }: Props) => {
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedBet, setCopiedBet] = useState(false);
 
-  const qrConfig = (gameId === "bicho" || gameId === "dragaodasorte")
-    ? bichoQRCodes[amount]
+  const qrConfig = (gameId === "bicho" || gameId === "dragaodasorte" || gameId === "worldcup")
+    ? (bichoQRCodes as any)[amount]
     : lotteryQRCodes[gameId];
 
   let betInfo = null;
@@ -74,6 +75,12 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
                 className="w-48 h-48 rounded-lg border border-border"
               />
             </div>
+          )}
+
+          {customTitle && (
+            <p className="text-center text-sm font-bold text-primary">
+              {customTitle} — R${amount}
+            </p>
           )}
 
           {betInfo && (

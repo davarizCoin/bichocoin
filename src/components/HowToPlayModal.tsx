@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ExternalLink } from "lucide-react";
 
-export type GameRulesKey = "bicho" | "dragao-sorte" | "quina" | "mega-sena" | "dia-de-sorte" | "mais-milionaria" | "powerball" | "mega-millions" | "lotto-america" | "2by2";
+export type GameRulesKey = "bicho" | "dragao-sorte" | "quina" | "mega-sena" | "dia-de-sorte" | "mais-milionaria" | "powerball" | "mega-millions" | "lotto-america" | "2by2" | "worldcup";
 
 interface GameRules {
   title: string;
@@ -14,6 +14,18 @@ interface GameRules {
 import tabelaDragao from "@/assets/tabela_dragao.jpg";
 
 const gameRules: Record<GameRulesKey, GameRules & { image?: string }> = {
+  "worldcup": {
+    title: "Copa do Mundo 2026",
+    emoji: "🏆",
+    rules: [
+      "Bancas Independentes: Cada valor de aposta (Ex: R$10, R$50) cria um pote de prêmios totalmente separado. Seus ganhos são baseados apenas na banca que você escolheu.",
+      "Rateio do Prêmio: O valor total arrecadado é dividido igualmente entre todos os apostadores da mesma banca que acertaram a Seleção Vencedora ou o Empate.",
+      "Encerramento Seguro: As apostas são encerradas exatamente 1 hora antes do início oficial da partida.",
+      "Pagamento Automático: O prêmio é enviado diretamente utilizando o e-mail cadastrado na aposta."
+    ],
+    resultUrl: "",
+    resultLabel: ""
+  },
   "bicho": {
     title: "Jogo do Bicho",
     emoji: "🎲",
@@ -174,15 +186,17 @@ const HowToPlayModal = ({ open, onClose, gameKey }: Props) => {
               </li>
             ))}
           </ul>
-          <a
-            href={rules.resultUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-1 text-xs text-primary hover:underline"
-          >
-            <ExternalLink className="h-3 w-3" />
-            {rules.resultLabel}
-          </a>
+          {rules.resultUrl && rules.resultLabel && (
+            <a
+              href={rules.resultUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1 text-xs text-primary hover:underline"
+            >
+              <ExternalLink className="h-3 w-3" />
+              {rules.resultLabel}
+            </a>
+          )}
         </div>
       </DialogContent>
     </Dialog>
