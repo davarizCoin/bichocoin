@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ArrowLeft, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { lotteryGames, LotteryGameConfig } from "@/data/games";
 import Header from "@/components/Header";
 import EmailModal from "@/components/EmailModal";
 import HowToPlayModal, { type GameRulesKey } from "@/components/HowToPlayModal";
 import LotteryGame from "@/components/LotteryGame";
+import useEmblaCarousel from "embla-carousel-react";
 
 import quinaImg from "@/assets/quina.jpg";
 import megasenaImg from "@/assets/megasena.jpg";
@@ -69,7 +70,6 @@ const gameImages: Record<string, string> = {
     "lotto-italy": lottoitalyImg,
 };
 
-// Country constants matching games.ts region IDs
 const countries = [
     { id: "br", key: "country_br", emoji: "🇧🇷" },
     { id: "us", key: "country_us", emoji: "🇺🇸" },
@@ -105,6 +105,22 @@ const InternationalLotteries = () => {
     const [activeGame, setActiveGame] = useState<LotteryGameConfig | null>(null);
     const [howToPlay, setHowToPlay] = useState<GameRulesKey | null>(null);
 
+    const [emblaRef, emblaApi] = useEmblaCarousel({
+        align: "start",
+        dragFree: true,
+        containScroll: "trimSnaps",
+        loop: true
+    });
+
+    // Auto-scroll logic
+    useEffect(() => {
+        if (!emblaApi) return;
+        const intervalId = setInterval(() => {
+            emblaApi.scrollNext();
+        }, 3000);
+        return () => clearInterval(intervalId);
+    }, [emblaApi]);
+
     const toggleDark = () => {
         setDark((d) => {
             document.documentElement.classList.toggle("dark", !d);
@@ -126,7 +142,6 @@ const InternationalLotteries = () => {
         localStorage.removeItem("promoCode");
     };
 
-    // When inside a game
     if (activeGame && email) {
         return (
             <div className="min-h-screen bg-background transition-colors">
@@ -144,108 +159,146 @@ const InternationalLotteries = () => {
         );
     }
 
-    // Filter games based on selected continent/country
     const filteredGames = selectedCountry
         ? lotteryGames.filter(g => g.region === selectedCountry)
         : [];
 
     return (
-        <div className="min-h-screen bg-background transition-colors">
+        <div className="min-h-screen bg-background transition-colors flex flex-col">
             <EmailModal open={!email} onSubmit={handleEmailSubmit} />
             <Header dark={dark} onToggleDark={toggleDark} email={email} onChangeEmail={handleChangeEmail} />
 
-            <main className="container py-6 space-y-8 max-w-lg mx-auto">
-                {/* Navigation Header */}
-                <div className="flex items-center gap-3 bg-card p-4 rounded-xl border border-border shadow-sm">
+            <main className="flex-1 container py-6 space-y-4 max-w-lg mx-auto flex flex-col min-h-0">
+                <div className="flex items-center gap-3 bg-card p-4 rounded-xl border border-border shadow-sm shrink-0 sticky top-0 z-40">
                     <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="shrink-0 hover:bg-muted rounded-full">
                         <ArrowLeft className="w-5 h-5 text-muted-foreground" />
                     </Button>
                     <div className="flex-1 text-center pr-8">
                         <h1 className="text-xl font-display font-bold text-foreground tracking-wide" style={{ color: "#FFD700" }}>LOTTERY INTERNATIONAL</h1>
-                        <p className="text-xs text-muted-foreground uppercase mt-0.5">{t("select_country")}</p>
+                        <p className="text-xs text-muted-foreground uppercase mt-0.5">Escolha o país para apostar</p>
                     </div>
                 </div>
 
-                {/* Global Country Grid */}
-                <div className="grid grid-cols-4 gap-4 sm:gap-6">
-                    {countries.map((country) => (
-                        <button
-                            key={country.id}
-                            onClick={() => setSelectedCountry(country.id)}
-                            className={`flex flex-col items-center justify-start p-2 rounded-2xl transition-all duration-200 hover:scale-105 shadow-sm
-                ${selectedCountry === country.id
-                                    ? 'bg-primary/10 ring-4 ring-primary/30 scale-105'
-                                    : 'bg-transparent hover:bg-muted/50'
-                                }`}
-                        >
-                            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-md border-2 border-border/50 bg-muted shrink-0 flex items-center justify-center">
-                                <img
-                                    src={`/flags/${country.id}.svg`}
-                                    alt={country.key}
-                                    className="w-full h-full object-cover scale-[1.1]"
-                                />
-                            </div>
-                            <span className="text-xs sm:text-[13px] font-bold text-center leading-tight line-clamp-2 text-foreground break-words w-full mt-3 drop-shadow-sm">
-                                {t(country.key as any)}
-                            </span>
-                        </button>
-                    ))}
+                {/* Vertical Scroll Area for Countries with hidden scrollbar */}
+                <div className="flex-1 overflow-y-auto no-scrollbar pb-4 pr-1">
+                    <div className="grid grid-cols-4 gap-3 py-2">
+                        {countries.map((country) => (
+                            <button
+                                key={country.id}
+                                onClick={() => setSelectedCountry(country.id)}
+                                className={`flex flex-col items-center p-2 rounded-2xl transition-all duration-200 hover:scale-105 active:scale-95
+                                    ${selectedCountry === country.id
+                                        ? 'bg-primary/10 ring-2 ring-primary/40 shadow-inner'
+                                        : 'bg-card border border-border/50 hover:bg-muted/50 shadow-sm'
+                                    }`}
+                            >
+                                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-border/50 bg-muted flex items-center justify-center pointer-events-none">
+                                    <img
+                                        src={`https://flagcdn.com/${country.id === 'gb' ? 'gb' : country.id}.svg`}
+                                        alt={country.key}
+                                        className="w-full h-full object-cover scale-[1.1]"
+                                        onError={(e) => {
+                                            const target = e.currentTarget;
+                                            target.src = `/flags/${country.id}.svg`;
+                                        }}
+                                    />
+                                </div>
+                                <span className="text-[10px] font-bold text-center mt-2 text-foreground line-clamp-1 w-full px-1">
+                                    {t(country.key as any)}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
-                {/* Selected Country Games */}
-                {selectedCountry && (
-                    <div className="space-y-4 animate-in slide-in-from-bottom-5 fade-in duration-300">
-                        <div className="flex items-center justify-between border-b border-border pb-2">
-                            <h2 className="text-sm font-bold text-foreground">
-                                <span className="text-primary mr-2">🎯</span>
-                                Jogos Disponíveis ({t(countries.find(c => c.id === selectedCountry)?.key as any)})
+                {!selectedCountry && (
+                    <div className="flex-none py-6 text-center text-muted-foreground animate-pulse">
+                        <span className="text-4xl mb-2 block">🌍</span>
+                        <p className="text-sm font-medium">Role e escolha um país para ver os jogos</p>
+                    </div>
+                )}
+            </main>
+
+            {/* Fixed Games Section at Footer */}
+            {selectedCountry && (
+                <div className="bg-card border-t border-border shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] p-4 pt-4 pb-8 sticky bottom-0 z-50 animate-in slide-in-from-bottom-full duration-500">
+                    <div className="max-w-lg mx-auto space-y-3">
+                        <div className="flex items-center justify-between border-b border-border/50 pb-2">
+                            <h2 className="text-xs font-bold text-foreground flex items-center gap-2">
+                                <span className="text-primary text-base">🎯</span>
+                                {t(countries.find(c => c.id === selectedCountry)?.key as any)} — {t("available_games" as any) === "available_games" ? "Jogos Disponíveis" : t("available_games" as any)}
                             </h2>
                         </div>
 
                         {filteredGames.length > 0 ? (
-                            <div className="grid grid-cols-2 gap-4">
-                                {filteredGames.map((game) => (
-                                    <div key={game.id} className="flex flex-col items-center gap-1">
+                            <div className={`grid ${filteredGames.length > 2 ? 'grid-cols-4' : 'grid-cols-2'} gap-2`}>
+                                {filteredGames.slice(0, 4).map((game) => (
+                                    <div key={game.id} className="relative">
                                         <button
                                             onClick={() => setActiveGame(game)}
-                                            className="rounded-xl overflow-hidden w-full h-32 bg-card border border-border transition-all shadow-md hover:scale-105 hover:shadow-lg p-2 flex flex-col items-center justify-center gap-2 group"
+                                            className="w-full rounded-xl bg-muted/30 border border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all p-2 flex flex-col items-center justify-center gap-1 h-24"
                                         >
-                                            {gameImages[game.id] ? (
-                                                <img src={gameImages[game.id]} alt={game.name} className="w-full h-16 object-contain" />
-                                            ) : game.region !== 'br' && game.region !== 'us' ? (
-                                                <img src={`/game-logos/${game.id}.svg`} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} alt={game.name} className="w-14 h-14 rounded-xl object-contain drop-shadow-sm mb-1" />
-                                            ) : (
-                                                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                                                    <span className="text-2xl">{game.emoji}</span>
-                                                </div>
-                                            )}
-                                            <span className="font-bold text-[11px] text-center line-clamp-1">{game.name}</span>
-                                            <p className="text-[10px] text-muted-foreground mt-auto bg-muted px-2 py-0.5 rounded-full">
+                                            <div className="w-full h-10 flex items-center justify-center overflow-hidden">
+                                                {gameImages[game.id] ? (
+                                                    <img
+                                                        src={gameImages[game.id]}
+                                                        alt={game.name}
+                                                        className="h-full w-auto object-contain"
+                                                        onError={(e) => {
+                                                            const target = e.currentTarget;
+                                                            target.style.display = 'none';
+                                                            target.nextElementSibling?.classList.remove('hidden');
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src={`/game-logos/${game.id}.svg`}
+                                                        alt={game.name}
+                                                        className="h-full w-auto object-contain"
+                                                        onError={(e) => {
+                                                            const target = e.currentTarget;
+                                                            target.style.display = 'none';
+                                                            target.nextElementSibling?.classList.remove('hidden');
+                                                        }}
+                                                    />
+                                                )}
+                                                <div className="hidden text-2xl animate-in fade-in duration-500">{game.emoji}</div>
+                                            </div>
+                                            <span className="font-bold text-[9px] text-center line-clamp-2 leading-tight h-6 flex items-center">{game.name}</span>
+                                            <span className="text-[8px] font-black text-primary bg-primary/10 px-1.5 py-0.5 rounded-full mt-auto">
                                                 {game.currencySymbol}{game.betAmount}
-                                            </p>
+                                            </span>
                                         </button>
-                                        <button
-                                            onClick={() => setHowToPlay(game as any)}
-                                            className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors mt-1"
-                                        >
-                                            <HelpCircle className="h-3 w-3" /> {t("how_to_play")}
-                                        </button>
+                                        <div className="absolute top-1 right-1">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setHowToPlay(game as any);
+                                                }}
+                                                className="p-1 text-muted-foreground hover:text-primary transition-colors"
+                                            >
+                                                <HelpCircle className="h-3 w-3" />
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 bg-muted/50 rounded-xl border border-dashed border-border">
-                                <p className="text-sm text-muted-foreground">Opa! API conectando para os jogos da região...</p>
-                                <p className="text-xs text-muted-foreground/70 mt-1">Logo você poderá apostar aqui!</p>
+                            <div className="text-center py-4">
+                                <p className="text-[10px] text-muted-foreground italic">Em breve mais jogos para esta região...</p>
                             </div>
                         )}
                     </div>
-                )}
-
-            </main>
+                </div>
+            )}
 
             {howToPlay && (
-                <HowToPlayModal open={!!howToPlay} onClose={() => setHowToPlay(null)} gameKey={typeof howToPlay === 'string' ? howToPlay : 'internacional'} gameConfig={typeof howToPlay !== 'string' ? howToPlay : undefined} />
+                <HowToPlayModal
+                    open={!!howToPlay}
+                    onClose={() => setHowToPlay(null)}
+                    gameKey={typeof howToPlay === 'string' ? howToPlay : 'internacional'}
+                    gameConfig={typeof howToPlay !== 'string' ? howToPlay : undefined}
+                />
             )}
         </div>
     );
