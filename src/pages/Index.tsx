@@ -7,7 +7,8 @@ import LotteryGame from "@/components/LotteryGame";
 import EmailModal from "@/components/EmailModal";
 import HowToPlayModal, { type GameRulesKey } from "@/components/HowToPlayModal";
 import InstallAppModal from "@/components/InstallAppModal";
-import { HelpCircle, Facebook, Instagram, Twitter, Send, Mail, Youtube, Apple, Smartphone } from "lucide-react";
+import { HelpCircle, Facebook, Instagram, Twitter, Send, Mail, Youtube, Apple, Smartphone, Globe } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 import jogobichoImg from "@/assets/jogobicho.jpg";
 import quinaImg from "@/assets/quina.jpg";
@@ -19,6 +20,7 @@ import megamillionImg from "@/assets/megamillion.jpg";
 import lottoamericaImg from "@/assets/lottoamerica.jpg";
 import twoby2Img from "@/assets/2by2.jpg";
 import dragaoImg from "@/assets/Dragao_da_Sorte.jpg";
+import lotteryInternationalImg from "@/assets/lottery-international.jpg";
 
 type ActiveGame = null | "bicho" | string;
 
@@ -34,13 +36,14 @@ const gameImages: Record<string, string> = {
 };
 
 const Index = () => {
-  const [email, setEmail] = useState<string | null>(null);
-  const [promoCode, setPromoCode] = useState<string>("");
+  const [email, setEmail] = useState<string | null>(() => localStorage.getItem("userEmail"));
+  const [promoCode, setPromoCode] = useState<string>(() => localStorage.getItem("promoCode") || "");
   const [dark, setDark] = useState(false);
   const [activeGame, setActiveGame] = useState<ActiveGame>(null);
   const [howToPlay, setHowToPlay] = useState<GameRulesKey | null>(null);
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const { t } = useLanguage();
 
   useState(() => {
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -71,9 +74,16 @@ const Index = () => {
   const handleEmailSubmit = (e: string, code: string) => {
     setEmail(e);
     setPromoCode(code);
+    localStorage.setItem("userEmail", e);
+    if (code) localStorage.setItem("promoCode", code);
   };
 
-  const handleChangeEmail = () => { setEmail(null); setPromoCode(""); };
+  const handleChangeEmail = () => {
+    setEmail(null);
+    setPromoCode("");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("promoCode");
+  };
   const activeLottery = lotteryGames.find((g) => g.id === activeGame);
 
   return (
@@ -87,7 +97,7 @@ const Index = () => {
             {/* Jogo do Bicho - Single image button */}
             <section className="space-y-3">
               <h3 className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
-                🎲 Jogo do Bicho
+                {t("animal_game")}
               </h3>
               <div className="flex flex-col items-center gap-1">
                 <button
@@ -100,7 +110,7 @@ const Index = () => {
                   onClick={() => setHowToPlay("bicho")}
                   className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
                 >
-                  <HelpCircle className="h-3 w-3" /> Como Jogar
+                  <HelpCircle className="h-3 w-3" /> {t("how_to_play")}
                 </button>
               </div>
             </section>
@@ -110,7 +120,7 @@ const Index = () => {
             {/* Dragão da Sorte */}
             <section className="space-y-3">
               <h3 className="text-xs text-red-500 uppercase tracking-widest text-center font-bold">
-                🐉 Dragão da Sorte
+                {t("lucky_dragon")}
               </h3>
               <div className="flex flex-col items-center gap-2">
                 <button
@@ -124,64 +134,36 @@ const Index = () => {
                   onClick={() => setHowToPlay("dragao-sorte")}
                   className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-red-500 transition-colors mt-1"
                 >
-                  <HelpCircle className="h-3 w-3" /> Como Jogar
+                  <HelpCircle className="h-3 w-3" /> {t("how_to_play")}
                 </button>
               </div>
             </section>
 
             <div className="border-t border-border" />
 
-            {/* Loterias Brasileiras */}
+            {/* LOTTERY INTERNATIONAL BANNER */}
             <section className="space-y-3">
               <h3 className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
-                🍀 Loterias Brasileiras
+                {t("select_country")}
               </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {lotteryGames.filter((g) => g.region === "br").map((game) => (
-                  <div key={game.id} className="flex flex-col items-center gap-1">
-                    <button
-                      onClick={() => setActiveGame(game.id)}
-                      className="rounded-xl overflow-hidden w-full bg-card border border-border transition-all shadow-md hover:scale-105 hover:shadow-lg p-2"
-                    >
-                      <img src={gameImages[game.id]} alt={game.name} className="w-full h-28 object-contain" />
-                      <p className="text-xs text-muted-foreground mt-1">R${game.betAmount}</p>
-                    </button>
-                    <button
-                      onClick={() => setHowToPlay(game.id as GameRulesKey)}
-                      className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors mt-0.5"
-                    >
-                      <HelpCircle className="h-3 w-3" /> Como Jogar
-                    </button>
+              <div className="flex flex-col items-center gap-1 w-full relative">
+                <button
+                  onClick={() => window.location.href = "/loterias-internacionais"}
+                  className="rounded-xl overflow-hidden w-full max-w-sm transition-all shadow-[0_10px_40px_-10px_rgba(255,215,0,0.5)] hover:scale-[1.03] hover:shadow-[0_10px_50px_-5px_rgba(255,215,0,0.7)] group relative border-2 border-[#FFD700]/50"
+                  style={{ minHeight: '140px' }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+                  <img
+                    src={lotteryInternationalImg}
+                    alt="Lottery International"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-x-0 bottom-3 z-20 flex flex-col items-center animate-pulse">
+                    <span className="text-[10px] uppercase font-bold text-[#FFD700] tracking-[0.2em] drop-shadow-lg bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm border border-[#FFD700]/30">
+                      CLIQUE PARA JOGAR!
+                    </span>
                   </div>
-                ))}
-              </div>
-            </section>
-
-            <div className="border-t border-border" />
-
-            {/* Loterias Americanas */}
-            <section className="space-y-3">
-              <h3 className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
-                🇺🇸 Loterias Americanas
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {lotteryGames.filter((g) => g.region === "us").map((game) => (
-                  <div key={game.id} className="flex flex-col items-center gap-1">
-                    <button
-                      onClick={() => setActiveGame(game.id)}
-                      className="rounded-xl overflow-hidden w-full bg-card border border-border transition-all shadow-md hover:scale-105 hover:shadow-lg p-2"
-                    >
-                      <img src={gameImages[game.id]} alt={game.name} className="w-full h-28 object-contain" />
-                      <p className="text-xs text-muted-foreground mt-1">R${game.betAmount}</p>
-                    </button>
-                    <button
-                      onClick={() => setHowToPlay(game.id as GameRulesKey)}
-                      className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors mt-0.5"
-                    >
-                      <HelpCircle className="h-3 w-3" /> Como Jogar
-                    </button>
-                  </div>
-                ))}
+                </button>
               </div>
             </section>
 
@@ -190,7 +172,7 @@ const Index = () => {
             {/* Outras Categorias */}
             <section className="space-y-3">
               <h3 className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
-                🌟 OUTROS
+                {t("others_title")}
               </h3>
               <div className="flex flex-col items-center gap-1 w-full">
                 <button
@@ -203,7 +185,7 @@ const Index = () => {
                 >
                   <div className="absolute inset-x-0 top-0 h-1/2 bg-white/30 rounded-t-lg"></div>
                   <span className="relative z-10 text-white font-black text-xl italic tracking-wide uppercase drop-shadow-md">
-                    OUTRAS APOSTAS
+                    {t("other_bets")}
                   </span>
                 </button>
               </div>
@@ -242,7 +224,7 @@ const Index = () => {
         {email && (
           <>
             <p className="text-center text-xs text-muted-foreground">
-              Apostando como: <span className="font-medium text-foreground">{email}</span>
+              {t("playing_as")} <span className="font-medium text-foreground">{email}</span>
               {promoCode && <span className="ml-1 text-gold font-bold">({promoCode})</span>}
             </p>
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 py-4">
@@ -276,11 +258,11 @@ const Index = () => {
               <div className="flex items-center gap-3">
                 <button onClick={handleAndroidInstall} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-green-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
                   <Smartphone className="w-4 h-4" />
-                  <span className="text-xs font-bold">Android</span>
+                  <span className="text-xs font-bold">{t("android_app")}</span>
                 </button>
                 <button onClick={() => setShowInstallModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-zinc-800 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
                   <Apple className="w-4 h-4" />
-                  <span className="text-xs font-bold">Apple</span>
+                  <span className="text-xs font-bold">{t("apple_app")}</span>
                 </button>
               </div>
             </div>
