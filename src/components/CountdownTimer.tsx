@@ -11,15 +11,47 @@ export interface DrawSchedule {
 }
 
 export const gameSchedules: Record<string, DrawSchedule> = {
+  // --- Nacionais / USA ---
   quina: { drawDays: [1, 2, 3, 4, 5, 6], drawTimes: [{ hour: 21, minute: 0 }] },
   "mega-sena": { drawDays: [2, 4, 6], drawTimes: [{ hour: 21, minute: 0 }] },
   "dia-de-sorte": { drawDays: [2, 4, 6], drawTimes: [{ hour: 21, minute: 0 }] },
   "mais-milionaria": { drawDays: [3, 6], drawTimes: [{ hour: 21, minute: 0 }] },
-  "mega-millions": { drawDays: [3, 6], drawTimes: [{ hour: 0, minute: 0 }] },
-  powerball: { drawDays: [2, 4, 0], drawTimes: [{ hour: 0, minute: 59 }] },
+  "mega-millions": { drawDays: [2, 5], drawTimes: [{ hour: 0, minute: 0 }] }, // 23:00 EST
+  powerball: { drawDays: [1, 3, 6], drawTimes: [{ hour: 0, minute: 59 }] },
   "lotto-america": { drawDays: [1, 3, 6], drawTimes: [{ hour: 0, minute: 0 }] },
   "2by2": { drawDays: [0, 1, 2, 3, 4, 5, 6], drawTimes: [{ hour: 0, minute: 0 }] },
   "bicho-dc4": { drawDays: [0, 1, 2, 3, 4, 5, 6], drawTimes: [{ hour: 13, minute: 50 }, { hour: 19, minute: 50 }, { hour: 23, minute: 30 }] },
+
+  // --- Europa ---
+  "uk-lotto": { drawDays: [3, 6], drawTimes: [{ hour: 17, minute: 0 }] }, // UK
+  "uk-thunderball": { drawDays: [2, 3, 5, 6], drawTimes: [{ hour: 16, minute: 0 }] },
+  "superenalotto": { drawDays: [2, 4, 5, 6], drawTimes: [{ hour: 16, minute: 0 }] }, // IT
+  "lotto-italy": { drawDays: [2, 4, 5, 6], drawTimes: [{ hour: 16, minute: 0 }] },
+  "el-gordo": { drawDays: [0], drawTimes: [{ hour: 17, minute: 30 }] }, // ES
+  "la-primitiva": { drawDays: [1, 4, 6], drawTimes: [{ hour: 17, minute: 30 }] },
+  "france-loto": { drawDays: [1, 3, 6], drawTimes: [{ hour: 16, minute: 30 }] }, // FR
+  "euromillions-fr": { drawDays: [2, 5], drawTimes: [{ hour: 16, minute: 0 }] },
+  "lotto-6aus49": { drawDays: [3, 6], drawTimes: [{ hour: 14, minute: 0 }] }, // DE
+  "eurojackpot-de": { drawDays: [2, 5], drawTimes: [{ hour: 15, minute: 0 }] },
+  "lotto-pl": { drawDays: [2, 4, 6], drawTimes: [{ hour: 17, minute: 40 }] }, // PL
+  "totoloto-pt": { drawDays: [3, 6], drawTimes: [{ hour: 18, minute: 0 }] }, // PT
+  "swiss-lotto": { drawDays: [3, 6], drawTimes: [{ hour: 15, minute: 0 }] }, // CH
+  "sweden-lotto": { drawDays: [3, 6], drawTimes: [{ hour: 15, minute: 0 }] }, // SE
+  "irish-lotto": { drawDays: [3, 6], drawTimes: [{ hour: 16, minute: 0 }] }, // IE
+
+  // --- Américas ---
+  "lotto-649": { drawDays: [3, 6], drawTimes: [{ hour: 23, minute: 30 }] }, // CA
+  "melate": { drawDays: [0, 3, 5], drawTimes: [{ hour: 23, minute: 15 }] }, // MX
+  "baloto": { drawDays: [3, 6], drawTimes: [{ hour: 1, minute: 0 }] }, // CO
+  "quini-6": { drawDays: [0, 3], drawTimes: [{ hour: 21, minute: 15 }] }, // AR
+  "loto-chile": { drawDays: [0, 2, 4], drawTimes: [{ hour: 21, minute: 0 }] }, // CL
+  "tinka": { drawDays: [0, 3], drawTimes: [{ hour: 22, minute: 50 }] }, // PE
+
+  // --- Oceania, Ásia e África ---
+  "oz-lotto": { drawDays: [2], drawTimes: [{ hour: 8, minute: 30 }] }, // AU
+  "nz-lotto": { drawDays: [3, 6], drawTimes: [{ hour: 5, minute: 0 }] }, // NZ
+  "loto-7": { drawDays: [1, 4], drawTimes: [{ hour: 6, minute: 45 }] }, // JP
+  "sa-lotto": { drawDays: [3, 6], drawTimes: [{ hour: 16, minute: 0 }] }, // ZA
 };
 
 export const useBettingStatus = (schedule: DrawSchedule) => {
@@ -28,34 +60,12 @@ export const useBettingStatus = (schedule: DrawSchedule) => {
   useEffect(() => {
     const check = () => {
       const now = getBrasiliaTime();
-      const day = now.getDay();
-      const mins = now.getHours() * 60 + now.getMinutes();
-
-      if (schedule.drawDays.includes(day)) {
-        for (const draw of schedule.drawTimes) {
-          const drawMins = draw.hour * 60 + draw.minute;
-          const closeMins = drawMins - 10;
-          const reopenMins = drawMins + 10;
-
-          if (mins >= closeMins && mins < reopenMins) {
-            // Need to return exactly when it reopens
-            const reopenDate = new Date(now);
-            reopenDate.setHours(draw.hour, draw.minute + 10, 0, 0);
-            setBettingOpen(false);
-            return reopenDate;
-          }
-        }
-      }
-      setBettingOpen(true);
-      return null;
+      const reopen = getActivePause(now, schedule);
+      setBettingOpen(reopen === null);
     };
 
-    // Check initial state
-    let reopenDate = check();
-
-    const interval = setInterval(() => {
-      reopenDate = check();
-    }, 1000);
+    check();
+    const interval = setInterval(check, 1000);
     return () => clearInterval(interval);
   }, [schedule]);
 
@@ -66,6 +76,28 @@ function getBrasiliaTime(): Date {
   const now = new Date();
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
   return new Date(utc - 3 * 3600000);
+}
+
+function getActivePause(now: Date, schedule: DrawSchedule): Date | null {
+  for (let d = -1; d <= 1; d++) {
+    const candidateDay = new Date(now);
+    candidateDay.setDate(now.getDate() + d);
+
+    if (schedule.drawDays.includes(candidateDay.getDay())) {
+      for (const time of schedule.drawTimes) {
+        const candidateTime = new Date(candidateDay.getTime());
+        candidateTime.setHours(time.hour, time.minute, 0, 0);
+
+        const closeTime = new Date(candidateTime.getTime() - 60 * 60000);
+        const reopenTime = new Date(candidateTime.getTime() + 120 * 60000);
+
+        if (now >= closeTime && now < reopenTime) {
+          return reopenTime;
+        }
+      }
+    }
+  }
+  return null;
 }
 
 const DAY_NAMES = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
@@ -83,37 +115,20 @@ const CountdownTimer = ({ schedule }: Props) => {
   const [closed, setClosed] = useState(false);
   const [nextDrawDate, setNextDrawDate] = useState("");
 
-  const [pauseTimeLeft, setPauseTimeLeft] = useState<{ minutes: number; seconds: number } | null>(null);
+  const [pauseTimeLeft, setPauseTimeLeft] = useState<{ hours: number; minutes: number; seconds: number } | null>(null);
 
   useEffect(() => {
     const tick = () => {
       const now = getBrasiliaTime();
-      const day = now.getDay();
-      const mins = now.getHours() * 60 + now.getMinutes();
 
-      let isAnyClosed = false;
-      let currentReopenDate: Date | null = null;
+      const reopenDate = getActivePause(now, schedule);
+      setClosed(reopenDate !== null);
 
-      if (schedule.drawDays.includes(day)) {
-        for (const draw of schedule.drawTimes) {
-          const drawMins = draw.hour * 60 + draw.minute;
-          const closeMins = drawMins - 10;
-          const reopenMins = drawMins + 10;
-
-          if (mins >= closeMins && mins < reopenMins) {
-            isAnyClosed = true;
-            currentReopenDate = new Date(now);
-            currentReopenDate.setHours(draw.hour, draw.minute + 10, 0, 0);
-            break;
-          }
-        }
-      }
-      setClosed(isAnyClosed);
-
-      if (isAnyClosed && currentReopenDate) {
-        const diff = currentReopenDate.getTime() - now.getTime();
+      if (reopenDate) {
+        const diff = reopenDate.getTime() - now.getTime();
         if (diff > 0) {
           setPauseTimeLeft({
+            hours: Math.floor((diff % 86400000) / 3600000),
             minutes: Math.floor((diff % 3600000) / 60000),
             seconds: Math.floor((diff % 60000) / 1000)
           });
@@ -123,17 +138,17 @@ const CountdownTimer = ({ schedule }: Props) => {
       }
 
       const next = getNextDraw(now, schedule);
-      const diff = next.getTime() - now.getTime();
+      const diffNext = next.getTime() - now.getTime();
 
-      if (diff <= 0) {
+      if (diffNext <= 0) {
         setDays(0); setHours(0); setMinutes(0); setSeconds(0);
         return;
       }
 
-      setDays(Math.floor(diff / 86400000));
-      setHours(Math.floor((diff % 86400000) / 3600000));
-      setMinutes(Math.floor((diff % 3600000) / 60000));
-      setSeconds(Math.floor((diff % 60000) / 1000));
+      setDays(Math.floor(diffNext / 86400000));
+      setHours(Math.floor((diffNext % 86400000) / 3600000));
+      setMinutes(Math.floor((diffNext % 3600000) / 60000));
+      setSeconds(Math.floor((diffNext % 60000) / 1000));
 
       const dayName = DAY_NAMES[next.getDay()];
       const monthName = MONTH_SHORT[next.getMonth()];
@@ -151,11 +166,11 @@ const CountdownTimer = ({ schedule }: Props) => {
     return (
       <div className="text-center bg-card border border-destructive rounded-xl p-4 space-y-2">
         <p className="text-lg font-display font-bold text-destructive animate-pulse">
-          🚫 PAUSA PRA O SORTEIO
+          🚫 Pausa para o sorteio!
         </p>
         {pauseTimeLeft && (
           <p className="text-sm text-muted-foreground font-mono">
-            Retorna em: {pauseTimeLeft.minutes.toString().padStart(2, '0')}:{pauseTimeLeft.seconds.toString().padStart(2, '0')}
+            Retorna em: {pauseTimeLeft.hours > 0 ? `${pauseTimeLeft.hours}:` : ''}{pauseTimeLeft.minutes.toString().padStart(2, '0')}:{pauseTimeLeft.seconds.toString().padStart(2, '0')}
           </p>
         )}
       </div>

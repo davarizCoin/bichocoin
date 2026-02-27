@@ -495,6 +495,94 @@ export const USLotteryLastResult = ({ apiId, title, emoji }: USLotteryLastResult
   );
 };
 
+/* ─── Generic Lottery Result (International Mock) ─── */
+import { type LotteryGameConfig } from "@/data/games";
+
+export interface IntlLotteryLastResultProps {
+  game: LotteryGameConfig;
+}
+
+export const InternationalLotteryLastResult = ({ game }: IntlLotteryLastResultProps) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Generates a stable deterministic fake result based on the current date and game ID
+    const tryFetch = () => {
+      setTimeout(() => {
+        const todayStr = new Date().toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        let hash = 0;
+        for (let i = 0; i < game.id.length; i++) hash += game.id.charCodeAt(i);
+        const seed = new Date().getDate() + hash;
+
+        const nums = new Set<number>();
+        while (nums.size < game.numbersToSelect) {
+          let nextNum = ((seed * (nums.size + 1) * 7) % game.maxNumber) + 1;
+          while (nums.has(nextNum)) nextNum = (nextNum % game.maxNumber) + 1;
+          nums.add(nextNum);
+        }
+
+        let bNums: number[] = [];
+        if (game.hasBonus && game.bonusMax) {
+          const bCount = game.bonusCount || 1;
+          while (bNums.length < bCount) {
+            let nextNum = ((seed * (bNums.length + 3) * 11) % game.bonusMax) + 1;
+            while (bNums.includes(nextNum)) nextNum = (nextNum % game.bonusMax) + 1;
+            bNums.push(nextNum);
+          }
+        }
+
+        setData({
+          draw_date: todayStr,
+          numbers: Array.from(nums).sort((a, b) => a - b).map(n => n.toString().padStart(2, "0")),
+          bonus: bNums.sort((a, b) => a - b).map(n => n.toString().padStart(2, "0")),
+        });
+        setLoading(false);
+      }, 300);
+    };
+
+    tryFetch();
+  }, [game.id]);
+
+  if (loading) return <ResultSkeleton rows={1} />;
+  if (!data) return null;
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-4 space-y-2 relative overflow-hidden">
+      <div className="absolute top-0 right-0 bg-primary/20 text-[9px] text-primary px-2 py-0.5 rounded-bl-lg font-bold">
+        SIMULADO
+      </div>
+      <div className="flex items-center justify-between">
+        <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+          <img key={`result-img-${game.id}`} src={`/game-logos/${game.id}.svg`} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} alt={game.name} className="w-4 h-4 rounded-full object-contain" />
+          <span className="hidden text-sm">{game.emoji}</span>
+          Último Sorteio — {game.name}
+        </h4>
+        <span className="text-[10px] text-muted-foreground">
+          {data.draw_date}
+        </span>
+      </div>
+
+      <div className="flex flex-wrap gap-2 justify-center mt-2">
+        {data.numbers.map((n: string, i: number) => (
+          <span
+            key={`w-${i}`}
+            className="inline-flex items-center justify-center w-8 h-8 rounded-full font-mono font-bold text-sm bg-zinc-900 border border-border text-white shadow-sm"
+          >
+            {n}
+          </span>
+        ))}
+        {data.bonus && data.bonus.map((b: string, i: number) => (
+          <span key={`b-${i}`} className="inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm bg-primary/20 text-primary border border-primary/30 shadow-sm">
+            {b}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 /* ─── Skeleton ─── */
 
 const ResultSkeleton = ({ rows }: { rows: number }) => (

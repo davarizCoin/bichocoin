@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { type LotteryGameConfig } from "@/data/games";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import QRCodeModal from "@/components/QRCodeModal";
 import CountdownTimer, { gameSchedules, useBettingStatus } from "@/components/CountdownTimer";
-import { LotteryLastResult, USLotteryLastResult } from "@/components/LastResults";
+import { LotteryLastResult, USLotteryLastResult, InternationalLotteryLastResult } from "@/components/LastResults";
 
 const MONTH_NAMES = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -109,16 +109,26 @@ const LotteryGame = ({ game, email, onBack, promoCode = "", image }: Props) => {
         <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
       </Button>
 
-      <div className="text-center w-full">
+      <div className="text-center w-full relative">
         {image ? (
-          <img src={image} alt={game.name} className="h-40 w-full max-w-[85%] mx-auto object-contain mb-2" />
+          <img key={`main-img-${game.id}`} src={image} alt={game.name} className="h-40 w-full max-w-[85%] mx-auto object-contain mb-2" />
+        ) : game.region !== 'br' && game.region !== 'us' ? (
+          <img key={`fallback-img-${game.id}`} src={`/game-logos/${game.id}.svg`} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} alt={game.name} className="h-28 w-28 mx-auto object-contain mb-2 drop-shadow-md rounded-2xl" />
         ) : (
           <span className="text-7xl inline-block mb-2">{game.emoji}</span>
         )}
         <h2 className="text-xl font-display font-bold text-foreground mt-1">{game.name}</h2>
-        <p className="text-xs text-muted-foreground pb-4">
+        <p className="text-xs text-muted-foreground pb-2">
           Escolha {game.numbersToSelect} números (1-{game.maxNumber})
         </p>
+        <a
+          href={game.resultUrl || `https://www.google.com/search?q=resultado+oficial+${game.name.replace(/\s+/g, '+')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium mb-4 bg-primary/10 px-3 py-1 rounded-full"
+        >
+          <ExternalLink className="h-3 w-3" /> Ver Números Sorteados
+        </a>
       </div>
 
       {schedule && <CountdownTimer schedule={schedule} />}
@@ -140,6 +150,8 @@ const LotteryGame = ({ game, email, onBack, promoCode = "", image }: Props) => {
           emoji={game.emoji}
         />
       )}
+
+      {!apiInfo && !usApiInfo && <InternationalLotteryLastResult game={game} />}
 
       <div className="grid grid-cols-10 gap-1.5">
         {numbers.map((n) => (
