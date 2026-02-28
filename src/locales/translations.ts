@@ -56,7 +56,7 @@ export type TranslationKey =
 export const translations: Record<LanguageCode, Record<TranslationKey, string>> = {
     pt: {
         user: "Usuário",
-        slogan: "O Bicho sempre paga!",
+        slogan: "Aqui o Bicho pega!",
         how_to_play: "Como Jogar",
         playing_as: "Apostando como:",
         android_app: "Android",
@@ -103,7 +103,7 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     },
     en: {
         user: "User",
-        slogan: "The Animal always pays!",
+        slogan: "The Bicho is on here!",
         how_to_play: "How to Play",
         playing_as: "Playing as:",
         android_app: "Android",
@@ -150,7 +150,7 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     },
     es: {
         user: "Usuario",
-        slogan: "¡El Animal siempre paga!",
+        slogan: "¡Aquí el Bicho manda!",
         how_to_play: "Cómo Jugar",
         playing_as: "Apostando como:",
         android_app: "Android",
@@ -197,7 +197,7 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     },
     fr: {
         user: "Utilisateur",
-        slogan: "L'Animal paie toujours !",
+        slogan: "Ici le Bicho assure !",
         how_to_play: "Comment Jouer",
         playing_as: "Parier en tant que :",
         android_app: "Android",
@@ -244,7 +244,7 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     },
     ru: {
         user: "Пользователь",
-        slogan: "Животное всегда платит!",
+        slogan: "Здесь Bicho рулит!",
         how_to_play: "Как играть",
         playing_as: "Играет как:",
         android_app: "Android",
@@ -291,7 +291,7 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     },
     zh: {
         user: "用户",
-        slogan: "动物总是付款！",
+        slogan: "这里是 Bicho 的地盘！",
         how_to_play: "怎么玩",
         playing_as: "扮演：",
         android_app: "安卓",
@@ -338,7 +338,7 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     },
     ja: {
         user: "ユーザー",
-        slogan: "動物はいつも支払います！",
+        slogan: "ここでビショが捕まる！",
         how_to_play: "遊び方",
         playing_as: "としてプレイ：",
         android_app: "Android",
@@ -385,7 +385,7 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     },
     ar: {
         user: "مستخدم",
-        slogan: "الحيوان يدفع دائمًا!",
+        slogan: "هنا البيشو يسيطر!",
         how_to_play: "كيف تلعب",
         playing_as: "يلعب باسم:",
         android_app: "أندرويد",
@@ -432,7 +432,7 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     },
     hi: {
         user: "उपयोगकर्ता",
-        slogan: "जानवर हमेशा भुगतान करता है!",
+        slogan: "यहाँ बिचो का राज है!",
         how_to_play: "कैसे खेलें",
         playing_as: "के रूप में खेल रहे हैं:",
         android_app: "Android",

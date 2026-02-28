@@ -104,6 +104,35 @@ const InternationalLotteries = () => {
     const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
     const [activeGame, setActiveGame] = useState<LotteryGameConfig | null>(null);
     const [howToPlay, setHowToPlay] = useState<GameRulesKey | null>(null);
+    const [userCountry, setUserCountry] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchCountry = async () => {
+            try {
+                // Try ip-api.com first
+                let response = await fetch('https://ip-api.com/json');
+                let data = await response.json();
+
+                if (data && data.countryCode) {
+                    setUserCountry(data.countryCode.toLowerCase());
+                    return;
+                }
+
+                // Fallback to ipapi.co
+                response = await fetch('https://ipapi.co/json/');
+                data = await response.json();
+                if (data && data.country_code) {
+                    setUserCountry(data.country_code.toLowerCase());
+                }
+            } catch (err) {
+                console.error("Error fetching IP location:", err);
+            }
+        };
+
+        fetchCountry();
+    }, []);
+
+    const filteredCountries = countries.filter(c => c.id !== userCountry);
 
     const [emblaRef, emblaApi] = useEmblaCarousel({
         align: "start",
@@ -182,7 +211,7 @@ const InternationalLotteries = () => {
                 {/* Vertical Scroll Area for Countries with hidden scrollbar */}
                 <div className="flex-1 overflow-y-auto no-scrollbar pb-4 pr-1">
                     <div className="grid grid-cols-4 gap-3 py-2">
-                        {countries.map((country) => (
+                        {filteredCountries.map((country) => (
                             <button
                                 key={country.id}
                                 onClick={() => setSelectedCountry(country.id)}
