@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { lotteryGames } from "@/data/games";
 import Header from "@/components/Header";
+import BreakingNews from "@/components/BreakingNews";
 import BichoGame from "@/components/BichoGame";
 import DragaoSorteGame from "@/components/DragaoSorteGame";
 import LotteryGame from "@/components/LotteryGame";
@@ -91,7 +92,9 @@ const Index = () => {
       <EmailModal open={!email} onSubmit={handleEmailSubmit} />
       <Header dark={dark} onToggleDark={toggleDark} email={email} onChangeEmail={handleChangeEmail} />
 
-      <main className="container py-6 space-y-6 max-w-lg mx-auto">
+      <main className="container py-4 space-y-4 max-w-lg mx-auto">
+        {activeGame === null && <BreakingNews onSelectGame={setActiveGame} />}
+
         {activeGame === null && (
           <>
             {/* Jogo do Bicho - Single image button */}

@@ -4,14 +4,14 @@ export interface QRCodeConfig {
 }
 
 export const bichoQRCodes: Record<number, QRCodeConfig> = {
-  2: { image: "/qrcodes/bicho-2.png", copyCode: "00020101021126360014br.gov.bcb.pix0114+551199999999952040000530398654042.005802BR5915JOGUE NO BICHO6009SAO PAULO62070503***6304FBDB" },
-  5: { image: "/qrcodes/bicho-5.png", copyCode: "00020101021126360014br.gov.bcb.pix0114+551199999999952040000530398654045.005802BR5915JOGUE NO BICHO6009SAO PAULO62070503***6304EDCD" },
-  10: { image: "/qrcodes/bicho-10.png", copyCode: "00020101021126360014br.gov.bcb.pix0114+5511999999999520400005303986540510.005802BR5915JOGUE NO BICHO6009SAO PAULO62070503***63045E61" },
-  20: { image: "/qrcodes/bicho-20.png", copyCode: "00020101021126360014br.gov.bcb.pix0114+5511999999999520400005303986540520.005802BR5915JOGUE NO BICHO6009SAO PAULO62070503***630402E4" },
-  50: { image: "/qrcodes/bicho-50.png", copyCode: "00020101021126360014br.gov.bcb.pix0114+5511999999999520400005303986540550.005802BR5915JOGUE NO BICHO6009SAO PAULO62070503***63043812" },
-  100: { image: "/qrcodes/bicho-100.png", copyCode: "00020101021126360014br.gov.bcb.pix0114+55119999999995204000053039865406100.005802BR5915JOGUE NO BICHO6009SAO PAULO62070503***6304E8A3" },
-  200: { image: "/qrcodes/bicho-200.png", copyCode: "00020101021126360014br.gov.bcb.pix0114+55119999999995204000053039865406200.005802BR5915JOGUE NO BICHO6009SAO PAULO62070503***6304A5D7" },
-  500: { image: "/qrcodes/bicho-500.png", copyCode: "00020101021126360014br.gov.bcb.pix0114+55119999999995204000053039865406500.005802BR5915JOGUE NO BICHO6009SAO PAULO62070503***630472ED" },
+  2: { image: "/qrcodes/bicho-2.png", copyCode: "lnbc20n...PLACEHOLDER_LN_INVOICE_2_SAT" },
+  5: { image: "/qrcodes/bicho-5.png", copyCode: "lnbc50n...PLACEHOLDER_LN_INVOICE_5_SAT" },
+  10: { image: "/qrcodes/bicho-10.png", copyCode: "lnbc100n...PLACEHOLDER_LN_INVOICE_10_SAT" },
+  20: { image: "/qrcodes/bicho-20.png", copyCode: "lnbc200n...PLACEHOLDER_LN_INVOICE_20_SAT" },
+  50: { image: "/qrcodes/bicho-50.png", copyCode: "lnbc500n...PLACEHOLDER_LN_INVOICE_50_SAT" },
+  100: { image: "/qrcodes/bicho-100.png", copyCode: "lnbc1u...PLACEHOLDER_LN_INVOICE_100_SAT" },
+  200: { image: "/qrcodes/bicho-200.png", copyCode: "lnbc2u...PLACEHOLDER_LN_INVOICE_200_SAT" },
+  500: { image: "/qrcodes/bicho-500.png", copyCode: "lnbc5u...PLACEHOLDER_LN_INVOICE_500_SAT" },
 };
 
 export const lotteryQRCodes: Record<string, QRCodeConfig> = {
