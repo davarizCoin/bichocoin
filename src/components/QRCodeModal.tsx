@@ -57,18 +57,20 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
     setTimeout(() => setCopiedBet(false), 2000);
   };
 
-  const handleOpenWallet = () => {
+  const handleOpenWallet = (e: React.MouseEvent) => {
     if (!qrConfig) return;
+
     const lnUrl = `lightning:${qrConfig.copyCode}`;
 
-    // Tenta abrir a carteira. Usar window.location.assign ou um link real
-    // é mais estável em navegadores móveis para evitar erro de "página não encontrada".
-    try {
-      window.location.assign(lnUrl);
-    } catch (e) {
-      console.error("Erro ao abrir carteira:", e);
-      // Fallback: se falhar, o usuário ainda tem o QR Code e o botão de copiar.
-    }
+    // IMPORTANTE: Em alguns navegadores mobile, o window.location.href direto
+    // pode causar erro de "Página não encontrada" se o app não responder rápido.
+    // Usar um link invisível ou window.open pode ser mais seguro.
+
+    // Tenta abrir em uma nova aba/janela para evitar que a página atual caia em erro
+    window.open(lnUrl, '_self');
+
+    // Se ainda der erro de página, o problema pode ser o navegador tentando carregar o protocolo.
+    // O fallback é sempre o Copiar QR que já está na tela.
   };
 
   return (
@@ -112,12 +114,9 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
           <div className="grid grid-cols-1 gap-2">
             <a
               href={`lightning:${qrConfig?.copyCode || ""}`}
+              target="_blank"
+              rel="noreferrer"
               className="w-full py-4 text-sm bg-yellow-500 hover:bg-yellow-600 text-black font-black border-none shadow-lg animate-pulse hover:animate-none group rounded-md flex items-center justify-center no-underline transition-all active:scale-95"
-              onClick={(e) => {
-                // Se estiver no mobile, o link href já cuida de tudo.
-                // No PC, o window.location pode ser mais seguro.
-                if (!qrConfig) e.preventDefault();
-              }}
             >
               <Wallet className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               ABRIR NA CARTEIRA
@@ -140,6 +139,10 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
                 {copiedBet ? "Copiado!" : "Copiar Memo"}
               </Button>
             </div>
+          </div>
+
+          <div className="bg-yellow-500/10 border border-yellow-500/20 p-2 rounded text-[9px] text-center text-yellow-600 dark:text-yellow-400">
+            Dica: Se o seu navegador der erro ao abrir o app, use o botão **"Copiar QR"** e cole manualmente na sua carteira. Isso acontece em conexões locais sem SSL.
           </div>
 
           <Button variant="ghost" className="w-full text-xs" onClick={onClose}>
