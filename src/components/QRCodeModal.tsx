@@ -59,9 +59,16 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
 
   const handleOpenWallet = () => {
     if (!qrConfig) return;
+    const lnUrl = `lightning:${qrConfig.copyCode}`;
 
-    // Agora o site é 100% Lightning para privacidade.
-    window.location.href = `lightning:${qrConfig.copyCode}`;
+    // Tenta abrir a carteira. Usar window.location.assign ou um link real
+    // é mais estável em navegadores móveis para evitar erro de "página não encontrada".
+    try {
+      window.location.assign(lnUrl);
+    } catch (e) {
+      console.error("Erro ao abrir carteira:", e);
+      // Fallback: se falhar, o usuário ainda tem o QR Code e o botão de copiar.
+    }
   };
 
   return (
@@ -103,13 +110,18 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
           </div>
 
           <div className="grid grid-cols-1 gap-2">
-            <Button
-              className="w-full py-6 text-sm bg-yellow-500 hover:bg-yellow-600 text-black font-black border-none shadow-lg animate-pulse hover:animate-none group"
-              onClick={handleOpenWallet}
+            <a
+              href={`lightning:${qrConfig?.copyCode || ""}`}
+              className="w-full py-4 text-sm bg-yellow-500 hover:bg-yellow-600 text-black font-black border-none shadow-lg animate-pulse hover:animate-none group rounded-md flex items-center justify-center no-underline transition-all active:scale-95"
+              onClick={(e) => {
+                // Se estiver no mobile, o link href já cuida de tudo.
+                // No PC, o window.location pode ser mais seguro.
+                if (!qrConfig) e.preventDefault();
+              }}
             >
               <Wallet className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               ABRIR NA CARTEIRA
-            </Button>
+            </a>
 
             <div className="flex gap-2">
               <Button
