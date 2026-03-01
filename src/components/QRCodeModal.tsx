@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Wallet } from "lucide-react";
 import { bichoQRCodes, lotteryQRCodes } from "@/data/qrCodes";
 
 interface Props {
@@ -57,12 +57,20 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
     setTimeout(() => setCopiedBet(false), 2000);
   };
 
+  const handleOpenWallet = () => {
+    if (!qrConfig) return;
+
+    // Agora o site é 100% Lightning para privacidade.
+    window.location.href = `lightning:${qrConfig.copyCode}`;
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-center font-display text-lg">
-            ⚡ Bitcoin Lightning Network
+          <DialogTitle className="text-center font-display text-lg flex items-center justify-center gap-2">
+            <Wallet className="w-5 h-5 text-yellow-500" />
+            Pagamento Privado
           </DialogTitle>
         </DialogHeader>
 
@@ -94,22 +102,32 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
             <p className="text-xs font-mono font-bold text-foreground break-all">{memoText}</p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="grid grid-cols-1 gap-2">
             <Button
-              className="flex-1 text-xs bg-blue-600 hover:bg-blue-700 text-white border-none"
-              onClick={handleCopyCode}
+              className="w-full py-6 text-sm bg-yellow-500 hover:bg-yellow-600 text-black font-black border-none shadow-lg animate-pulse hover:animate-none group"
+              onClick={handleOpenWallet}
             >
-              {copiedCode ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
-              {copiedCode ? "Copiado!" : "Copiar QR Code"}
+              <Wallet className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+              ABRIR NA CARTEIRA
             </Button>
-            <Button
-              variant="outline"
-              className="flex-1 text-xs"
-              onClick={handleCopyBet}
-            >
-              {copiedBet ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
-              {copiedBet ? "Copiado!" : "Copiar Aposta"}
-            </Button>
+
+            <div className="flex gap-2">
+              <Button
+                className="flex-1 text-[10px] bg-blue-600 hover:bg-blue-700 text-white border-none h-9"
+                onClick={handleCopyCode}
+              >
+                {copiedCode ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
+                {copiedCode ? "Copiado!" : "Copiar QR"}
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 text-[10px] h-9"
+                onClick={handleCopyBet}
+              >
+                {copiedBet ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
+                {copiedBet ? "Copiado!" : "Copiar Memo"}
+              </Button>
+            </div>
           </div>
 
           <Button variant="ghost" className="w-full text-xs" onClick={onClose}>
