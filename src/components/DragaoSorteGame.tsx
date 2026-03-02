@@ -34,8 +34,7 @@ const DragaoSorteGame = ({ email, onBack, initialCategory = "grupo", promoCode =
         drawDays: [0, 1, 2, 3, 4, 5, 6],
         drawTimes: [
             { hour: 13, minute: 50 },
-            { hour: 19, minute: 50 },
-            { hour: 23, minute: 30 }
+            { hour: 19, minute: 50 }
         ]
     });
 
@@ -102,8 +101,7 @@ const DragaoSorteGame = ({ email, onBack, initialCategory = "grupo", promoCode =
                     drawDays: [0, 1, 2, 3, 4, 5, 6],
                     drawTimes: [
                         { hour: 13, minute: 50 },
-                        { hour: 19, minute: 50 },
-                        { hour: 23, minute: 30 }
+                        { hour: 19, minute: 50 }
                     ]
                 }}
             />

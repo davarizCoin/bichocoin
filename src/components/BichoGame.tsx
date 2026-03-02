@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { DC4LastResult } from "@/components/LastResults";
+import jbImg from "@/assets/jb.png";
 
 interface Props {
   email: string;
@@ -91,12 +92,11 @@ const BichoGame = ({ email, onBack, initialCategory = "grupo", promoCode = "" }:
         <Button variant="ghost" size="sm" onClick={onBack} className="text-muted-foreground -ml-2">
           <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
         </Button>
-        <div className="text-center absolute left-1/2 -translate-x-1/2 -mt-1">
-          <span className="text-3xl">🎲</span>
-          <h2 className="text-xl font-display font-bold text-foreground mt-1 mb-2">Jogo do Bicho</h2>
+        <div className="absolute left-1/2 -translate-x-1/2 -mt-4">
+          <img src={jbImg} alt="Jogo do Bicho" className="h-48 w-auto object-contain" />
         </div>
       </div>
-      <div className="pt-10"> {/* Espaçamento para empurrar o DC4 para baixo do Título Centralizado Absoluto */}
+      <div className="pt-36"> {/* Espaçamento reduzido em mais 1% */}
         <DC4LastResult />
       </div>
       <CountdownTimer

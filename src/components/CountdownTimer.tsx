@@ -20,7 +20,7 @@ export const gameSchedules: Record<string, DrawSchedule> = {
   powerball: { drawDays: [1, 3, 6], drawTimes: [{ hour: 0, minute: 59 }] },
   "lotto-america": { drawDays: [1, 3, 6], drawTimes: [{ hour: 0, minute: 0 }] },
   "2by2": { drawDays: [0, 1, 2, 3, 4, 5, 6], drawTimes: [{ hour: 0, minute: 0 }] },
-  "bicho-dc4": { drawDays: [0, 1, 2, 3, 4, 5, 6], drawTimes: [{ hour: 13, minute: 50 }, { hour: 19, minute: 50 }, { hour: 23, minute: 30 }] },
+  "bicho-dc4": { drawDays: [0, 1, 2, 3, 4, 5, 6], drawTimes: [{ hour: 13, minute: 50 }, { hour: 19, minute: 50 }] },
 
   // --- Europa ---
   "uk-lotto": { drawDays: [3, 6], drawTimes: [{ hour: 17, minute: 0 }] }, // UK
@@ -88,8 +88,8 @@ function getActivePause(now: Date, schedule: DrawSchedule): Date | null {
         const candidateTime = new Date(candidateDay.getTime());
         candidateTime.setHours(time.hour, time.minute, 0, 0);
 
-        const closeTime = new Date(candidateTime.getTime() - 60 * 60000);
-        const reopenTime = new Date(candidateTime.getTime() + 120 * 60000);
+        const closeTime = new Date(candidateTime.getTime() - 30 * 60000);
+        const reopenTime = new Date(candidateTime.getTime() + 30 * 60000);
 
         if (now >= closeTime && now < reopenTime) {
           return reopenTime;

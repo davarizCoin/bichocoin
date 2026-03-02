@@ -121,14 +121,6 @@ const LotteryGame = ({ game, email, onBack, promoCode = "", image }: Props) => {
         <p className="text-xs text-muted-foreground pb-2">
           Escolha {game.numbersToSelect} números (1-{game.maxNumber})
         </p>
-        <a
-          href={game.resultUrl || `https://www.google.com/search?q=resultado+oficial+${game.name.replace(/\s+/g, '+')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium mb-4 bg-primary/10 px-3 py-1 rounded-full"
-        >
-          <ExternalLink className="h-3 w-3" /> Ver Números Sorteados
-        </a>
       </div>
 
       {schedule && <CountdownTimer schedule={schedule} />}
@@ -152,6 +144,17 @@ const LotteryGame = ({ game, email, onBack, promoCode = "", image }: Props) => {
       )}
 
       {!apiInfo && !usApiInfo && <InternationalLotteryLastResult game={game} />}
+
+      <div className="flex justify-center mt-3 mb-6">
+        <a
+          href={game.resultUrl || `https://www.google.com/search?q=resultado+oficial+${game.name.replace(/\s+/g, '+')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-[11px] text-primary hover:underline font-bold bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 transition-all hover:bg-primary/20 active:scale-95"
+        >
+          <ExternalLink className="h-3 w-3 text-primary" /> Ver Números Sorteados
+        </a>
+      </div>
 
       <div className="grid grid-cols-10 gap-1.5">
         {numbers.map((n) => (
