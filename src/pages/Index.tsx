@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "@/hooks/use-toast";
 import { lotteryGames } from "@/data/games";
 import Header from "@/components/Header";
 import BreakingNews from "@/components/BreakingNews";
@@ -46,12 +47,14 @@ const Index = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const { t } = useLanguage();
 
-  useState(() => {
-    window.addEventListener('beforeinstallprompt', (e) => {
+  useEffect(() => {
+    const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-    });
-  });
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
 
   const handleAndroidInstall = async () => {
     if (deferredPrompt) {
@@ -61,7 +64,11 @@ const Index = () => {
         setDeferredPrompt(null);
       }
     } else {
-      alert("App já instalado ou indisponível no seu navegador (tente pelo Chrome).");
+      toast({
+        title: "Instalação indisponível",
+        description: "App já instalado ou não disponível neste navegador. Tente pelo Chrome.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -91,6 +98,7 @@ const Index = () => {
     <div className="min-h-screen bg-background transition-colors">
       <EmailModal open={!email} onSubmit={handleEmailSubmit} />
       <Header dark={dark} onToggleDark={toggleDark} email={email} onChangeEmail={handleChangeEmail} />
+
 
       <main className="container py-4 space-y-4 max-w-lg mx-auto">
         {activeGame === null && <BreakingNews onSelectGame={setActiveGame} />}
@@ -233,22 +241,22 @@ const Index = () => {
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 py-4">
               {/* Redes Sociais */}
               <div className="flex items-center gap-3">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all hover:scale-110">
+                <a href="https://facebook.com/bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all hover:scale-110" title="Facebook BichoCoin">
                   <Facebook className="w-4 h-4" />
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all hover:scale-110">
+                <a href="https://instagram.com/bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all hover:scale-110" title="Instagram BichoCoin">
                   <Instagram className="w-4 h-4" />
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-sky-500 hover:text-white transition-all hover:scale-110">
+                <a href="https://twitter.com/bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-sky-500 hover:text-white transition-all hover:scale-110" title="Twitter BichoCoin">
                   <Twitter className="w-4 h-4" />
                 </a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-red-600 hover:text-white transition-all hover:scale-110">
+                <a href="https://youtube.com/@bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-red-600 hover:text-white transition-all hover:scale-110" title="YouTube BichoCoin">
                   <Youtube className="w-4 h-4" />
                 </a>
-                <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-400 hover:text-white transition-all hover:scale-110">
+                <a href="https://t.me/bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-400 hover:text-white transition-all hover:scale-110" title="Telegram BichoCoin">
                   <Send className="w-4 h-4" />
                 </a>
-                <a href="mailto:contato@bichocoin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-gray-700 hover:text-white transition-all hover:scale-110">
+                <a href="mailto:contato@bichocoin.com" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-gray-700 hover:text-white transition-all hover:scale-110" title="E-mail BichoCoin">
                   <Mail className="w-4 h-4" />
                 </a>
               </div>

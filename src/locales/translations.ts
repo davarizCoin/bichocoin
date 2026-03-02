@@ -51,7 +51,9 @@ export type TranslationKey =
     | 'ch'
     | 'se'
     | 'ie'
-    | 'nz';
+    | 'nz'
+    | 'breaking_news_title'
+    | 'closed';
 
 export const translations: Record<LanguageCode, Record<TranslationKey, string>> = {
     pt: {
@@ -100,6 +102,8 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
         se: "Suécia",
         ie: "Irlanda",
         nz: "Nova Zelândia",
+        breaking_news_title: "ENCERRAMENTO DE APOSTAS",
+        closed: "ENCERRADO",
     },
     en: {
         user: "User",
@@ -147,6 +151,8 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
         se: "Sweden",
         ie: "Ireland",
         nz: "New Zealand",
+        breaking_news_title: "BETTING CLOSING",
+        closed: "CLOSED",
     },
     es: {
         user: "Usuario",
@@ -194,6 +200,8 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
         se: "Suecia",
         ie: "Irlanda",
         nz: "Nueva Zelanda",
+        breaking_news_title: "EL CIERRE DE APUESTAS",
+        closed: "CERRADO",
     },
     fr: {
         user: "Utilisateur",
@@ -241,6 +249,8 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
         se: "Suède",
         ie: "Irlande",
         nz: "Nouvelle-Zélande",
+        breaking_news_title: "CLÔTURE DES PARIS",
+        closed: "FERMÉ",
     },
     ru: {
         user: "Пользователь",
@@ -288,6 +298,8 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
         se: "Швеция",
         ie: "Ирландия",
         nz: "Новая Зеландия",
+        breaking_news_title: "ЗАКРЫТИЕ СТАВОК",
+        closed: "ЗАКРЫТО",
     },
     zh: {
         user: "用户",
@@ -335,6 +347,8 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
         se: "瑞典",
         ie: "爱尔兰",
         nz: "新西兰",
+        breaking_news_title: "投注截標",
+        closed: "已截標",
     },
     ja: {
         user: "ユーザー",
@@ -382,6 +396,8 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
         se: "スウェーデン",
         ie: "アイルランド",
         nz: "ニュージーランド",
+        breaking_news_title: "トレード締め切り",
+        closed: "終了",
     },
     ar: {
         user: "مستخدم",
@@ -429,6 +445,8 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
         se: "السويد",
         ie: "أيرلندا",
         nz: "نيوزيلندا",
+        breaking_news_title: "إغلاق الرهان",
+        closed: "مغلق",
     },
     hi: {
         user: "उपयोगकर्ता",
@@ -476,5 +494,7 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
         se: "स्वीडन",
         ie: "आयरलैंड",
         nz: "न्यूज़ीलैंड",
+        breaking_news_title: "सट्टेबाजी बंद हो रही है",
+        closed: "बंद",
     }
 };
