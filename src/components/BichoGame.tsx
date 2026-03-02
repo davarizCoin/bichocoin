@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { DC4LastResult } from "@/components/LastResults";
-import jbImg from "@/assets/jb.png";
 
 interface Props {
   email: string;
@@ -92,11 +91,12 @@ const BichoGame = ({ email, onBack, initialCategory = "grupo", promoCode = "" }:
         <Button variant="ghost" size="sm" onClick={onBack} className="text-muted-foreground -ml-2">
           <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
         </Button>
-        <div className="absolute left-1/2 -translate-x-1/2 -mt-4">
-          <img src={jbImg} alt="Jogo do Bicho" className="h-48 w-auto object-contain" />
+        <div className="text-center absolute left-1/2 -translate-x-1/2 -mt-1">
+          <span className="text-3xl">🎲</span>
+          <h2 className="text-xl font-display font-bold text-foreground mt-1 mb-2">Jogo do Bicho</h2>
         </div>
       </div>
-      <div className="pt-36"> {/* Espaçamento reduzido em mais 1% */}
+      <div className="pt-10"> {/* Espaçamento para empurrar o DC4 para baixo do Título Centralizado Absoluto */}
         <DC4LastResult />
       </div>
       <CountdownTimer
@@ -118,8 +118,7 @@ const BichoGame = ({ email, onBack, initialCategory = "grupo", promoCode = "" }:
             className={`py-2 rounded-md text-sm font-display font-semibold tracking-wide transition-all ${category === cat.key
               ? "bg-primary text-primary-foreground shadow-sm"
               : "text-muted-foreground hover:text-foreground"
-              } ${!bettingOpen ? "opacity-50 cursor-not-allowed" : ""}`}
-            disabled={!bettingOpen}
+              }`}
           >
             {cat.label}
           </button>
@@ -127,11 +126,11 @@ const BichoGame = ({ email, onBack, initialCategory = "grupo", promoCode = "" }:
       </div>
 
       {line && category === "grupo" && !selectedAnimal && (
-        <AnimalGrid line={line} onSelect={setSelectedAnimal} disabled={!bettingOpen} />
+        <AnimalGrid line={line} onSelect={setSelectedAnimal} />
       )}
 
       {line && category === "dezena" && !isDezenaSelected && (
-        <AnimalGrid line={line} onSelect={() => { }} showDezenas onSelectDezena={handleSelectDezena} disabled={!bettingOpen} />
+        <AnimalGrid line={line} onSelect={() => { }} showDezenas onSelectDezena={handleSelectDezena} />
       )}
 
       {line && (category === "centena" || category === "milhar") && !isNumberValid && (
@@ -148,8 +147,7 @@ const BichoGame = ({ email, onBack, initialCategory = "grupo", promoCode = "" }:
               value={numberInput}
               onChange={(e) => setNumberInput(e.target.value.replace(/\D/g, ""))}
               placeholder={category === "centena" ? "000" : "0000"}
-              disabled={!bettingOpen}
-              className={`text-center text-2xl font-mono font-bold tracking-widest ${!bettingOpen ? "opacity-50 cursor-not-allowed" : ""}`}
+              className="text-center text-2xl font-mono font-bold tracking-widest"
             />
           </div>
         </div>

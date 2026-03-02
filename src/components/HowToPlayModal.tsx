@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ExternalLink } from "lucide-react";
 
-export type GameRulesKey = "bicho" | "dragao-sorte" | "quina" | "mega-sena" | "dia-de-sorte" | "mais-milionaria" | "powerball" | "mega-millions" | "lotto-america" | "2by2" | "worldcup" | "internacional";
+export type GameRulesKey = "bicho" | "dragao-sorte" | "quina" | "mega-sena" | "dia-de-sorte" | "mais-milionaria" | "powerball" | "mega-millions" | "lotto-america" | "2by2";
 
 interface GameRules {
   title: string;
@@ -14,30 +14,6 @@ interface GameRules {
 import tabelaDragao from "@/assets/tabela_dragao.jpg";
 
 const gameRules: Record<GameRulesKey, GameRules & { image?: string }> = {
-  "internacional": {
-    title: "Loteria Internacional",
-    emoji: "🌍",
-    rules: [
-      "Cada loteria internacional possui regras locais de aposta (quantidade de dezenas e limites).",
-      "As apostas são convertidas considerando a sua moeda local do jogo e pagas via Lightning Network.",
-      "Após o sorteio oficial do país correspondente, o resultado é validado.",
-      "O pagamento do prêmio, em caso de acerto, ficará disponível para saque imediato via Invoice."
-    ],
-    resultUrl: "",
-    resultLabel: ""
-  },
-  "worldcup": {
-    title: "Copa do Mundo 2026",
-    emoji: "🏆",
-    rules: [
-      "Bancas Independentes: Cada valor de aposta (Ex: R$10, R$50) cria um pote de prêmios totalmente separado. Seus ganhos são baseados apenas na banca que você escolheu.",
-      "Rateio do Prêmio: O valor total arrecadado é dividido igualmente entre todos os apostadores da mesma banca que acertaram a Seleção Vencedora ou o Empate.",
-      "Encerramento Seguro: As apostas são encerradas exatamente 1 hora antes do início oficial da partida.",
-      "Pagamento Automático: O prêmio é enviado via Lightning Network diretamente utilizando o e-mail cadastrado na aposta."
-    ],
-    resultUrl: "",
-    resultLabel: ""
-  },
   "bicho": {
     title: "Jogo do Bicho",
     emoji: "🎲",
@@ -166,70 +142,47 @@ const gameRules: Record<GameRulesKey, GameRules & { image?: string }> = {
   },
 };
 
-import { type LotteryGameConfig } from "@/data/games";
-
 interface Props {
   open: boolean;
   onClose: () => void;
   gameKey: GameRulesKey;
-  gameConfig?: LotteryGameConfig;
 }
 
-const HowToPlayModal = ({ open, onClose, gameKey, gameConfig }: Props) => {
-  const rules = gameConfig ? null : gameRules[gameKey];
-  if (!rules && !gameConfig) return null;
-
-  const title = gameConfig ? gameConfig.name : rules?.title;
-  const isSvgLogo = gameConfig && gameConfig.region !== 'br' && gameConfig.region !== 'us';
-
-  const defaultRules = gameConfig ? [
-    `Escolha ${gameConfig.numbersToSelect} números de 1 a ${gameConfig.maxNumber}.`,
-    gameConfig.hasBonus ? `Escolha ${gameConfig.bonusCount || 1} ${gameConfig.bonusLabel} de 1 a ${gameConfig.bonusMax}.` : `Sem números bônus adicionais necessários.`,
-    `O valor da aposta fixa é de ${gameConfig.currencySymbol || ""}${gameConfig.betAmount}.`,
-    "Certifique-se de que seu e-mail está correto, pois assim que fizer a aposta você receberá um e-mail de confirmação.",
-    "Em caso de acerto, o prêmio será enviado para o endereço original de e-mail que consta na aposta."
-  ] : rules?.rules || [];
-
-  const resultUrl = gameConfig ? (gameConfig.resultUrl || `https://www.google.com/search?q=resultado+oficial+${gameConfig.name.replace(/\s+/g, '+')}`) : rules?.resultUrl;
-  const resultLabel = gameConfig ? "Resultado Oficial" : rules?.resultLabel;
+const HowToPlayModal = ({ open, onClose, gameKey }: Props) => {
+  const rules = gameRules[gameKey];
+  if (!rules) return null;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-center font-display text-lg flex items-center justify-center gap-2">
-            {isSvgLogo ? (
-              <img key={`modal-img-${gameConfig.id}`} src={`/game-logos/${gameConfig.id}.svg`} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} alt={title} className="w-6 h-6 rounded-full object-contain" />
-            ) : null}
-            <span className={isSvgLogo ? "hidden" : ""}>{gameConfig ? gameConfig.emoji : rules?.emoji}</span>
-            {title}
+          <DialogTitle className="text-center font-display text-lg">
+            {rules.emoji} {rules.title}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-3 py-2">
-          {rules?.image && (
+          {rules.image && (
             <div className="flex justify-center mb-2">
               <img src={rules.image} alt={`Tabela ${rules.title}`} className="rounded-xl border border-border/50 max-h-48 w-auto object-contain shadow-sm" />
             </div>
           )}
           <ul className="space-y-2">
-            {defaultRules.map((rule, i) => (
+            {rules.rules.map((rule, i) => (
               <li key={i} className="flex gap-2 text-sm text-foreground">
                 <span className="text-primary font-bold">{i + 1}.</span>
                 <span>{rule}</span>
               </li>
             ))}
           </ul>
-          {resultUrl && resultLabel && (
-            <a
-              href={resultUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-1 text-xs text-primary hover:underline mt-4 bg-primary/10 py-2 rounded-lg"
-            >
-              <ExternalLink className="h-4 w-4" />
-              {resultLabel}
-            </a>
-          )}
+          <a
+            href={rules.resultUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-1 text-xs text-primary hover:underline"
+          >
+            <ExternalLink className="h-3 w-3" />
+            {rules.resultLabel}
+          </a>
         </div>
       </DialogContent>
     </Dialog>

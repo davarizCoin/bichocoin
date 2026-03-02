@@ -5,10 +5,9 @@ interface Props {
   onSelect: (animal: Animal) => void;
   showDezenas?: boolean;
   onSelectDezena?: (animal: Animal, dezena: string) => void;
-  disabled?: boolean;
 }
 
-const AnimalGrid = ({ line, onSelect, showDezenas, onSelectDezena, disabled }: Props) => {
+const AnimalGrid = ({ line, onSelect, showDezenas, onSelectDezena }: Props) => {
   if (showDezenas) {
     return (
       <div className="space-y-3">
@@ -27,8 +26,7 @@ const AnimalGrid = ({ line, onSelect, showDezenas, onSelectDezena, disabled }: P
                   <button
                     key={dz}
                     onClick={() => onSelectDezena?.(animal, dz)}
-                    disabled={disabled}
-                    className={`px-3 py-2 rounded-md bg-muted text-foreground text-sm font-mono font-bold transition-all ${disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-primary hover:text-primary-foreground hover:scale-105"}`}
+                    className="px-3 py-2 rounded-md bg-muted text-foreground text-sm font-mono font-bold hover:bg-primary hover:text-primary-foreground transition-all hover:scale-105"
                   >
                     {dz}
                   </button>
@@ -51,8 +49,7 @@ const AnimalGrid = ({ line, onSelect, showDezenas, onSelectDezena, disabled }: P
           <button
             key={animal.group}
             onClick={() => onSelect(animal)}
-            disabled={disabled}
-            className={`flex flex-col items-center p-2 rounded-xl bg-card border border-border transition-all ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-gold hover:shadow-gold hover:scale-105"}`}
+            className="flex flex-col items-center p-2 rounded-xl bg-card border border-border hover:border-gold hover:shadow-gold transition-all hover:scale-105"
           >
             <span className="text-2xl">{animal.emoji}</span>
             <span className="text-[10px] font-display font-bold text-foreground mt-1">{animal.name}</span>

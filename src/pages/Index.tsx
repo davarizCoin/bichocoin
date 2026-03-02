@@ -1,16 +1,13 @@
-import { useState, useEffect } from "react";
-import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
 import { lotteryGames } from "@/data/games";
 import Header from "@/components/Header";
-import BreakingNews from "@/components/BreakingNews";
 import BichoGame from "@/components/BichoGame";
 import DragaoSorteGame from "@/components/DragaoSorteGame";
 import LotteryGame from "@/components/LotteryGame";
 import EmailModal from "@/components/EmailModal";
 import HowToPlayModal, { type GameRulesKey } from "@/components/HowToPlayModal";
 import InstallAppModal from "@/components/InstallAppModal";
-import { HelpCircle, Facebook, Instagram, Twitter, Send, Mail, Youtube, Apple, Smartphone, Globe } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { HelpCircle, Facebook, Instagram, Twitter, Send, Mail, Youtube, Apple, Smartphone } from "lucide-react";
 
 import jogobichoImg from "@/assets/jogobicho.jpg";
 import quinaImg from "@/assets/quina.jpg";
@@ -22,7 +19,6 @@ import megamillionImg from "@/assets/megamillion.jpg";
 import lottoamericaImg from "@/assets/lottoamerica.jpg";
 import twoby2Img from "@/assets/2by2.jpg";
 import dragaoImg from "@/assets/Dragao_da_Sorte.jpg";
-import lotteryInternationalImg from "@/assets/lottery-international.jpg";
 
 type ActiveGame = null | "bicho" | string;
 
@@ -38,23 +34,20 @@ const gameImages: Record<string, string> = {
 };
 
 const Index = () => {
-  const [email, setEmail] = useState<string | null>(() => localStorage.getItem("userEmail"));
-  const [promoCode, setPromoCode] = useState<string>(() => localStorage.getItem("promoCode") || "");
+  const [email, setEmail] = useState<string | null>(null);
+  const [promoCode, setPromoCode] = useState<string>("");
   const [dark, setDark] = useState(false);
   const [activeGame, setActiveGame] = useState<ActiveGame>(null);
   const [howToPlay, setHowToPlay] = useState<GameRulesKey | null>(null);
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const { t } = useLanguage();
 
-  useEffect(() => {
-    const handler = (e: Event) => {
+  useState(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
+    });
+  });
 
   const handleAndroidInstall = async () => {
     if (deferredPrompt) {
@@ -64,11 +57,7 @@ const Index = () => {
         setDeferredPrompt(null);
       }
     } else {
-      toast({
-        title: "Instalação indisponível",
-        description: "App já instalado ou não disponível neste navegador. Tente pelo Chrome.",
-        variant: "destructive",
-      });
+      alert("App já instalado ou indisponível no seu navegador (tente pelo Chrome).");
     }
   };
 
@@ -82,16 +71,9 @@ const Index = () => {
   const handleEmailSubmit = (e: string, code: string) => {
     setEmail(e);
     setPromoCode(code);
-    localStorage.setItem("userEmail", e);
-    if (code) localStorage.setItem("promoCode", code);
   };
 
-  const handleChangeEmail = () => {
-    setEmail(null);
-    setPromoCode("");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("promoCode");
-  };
+  const handleChangeEmail = () => { setEmail(null); setPromoCode(""); };
   const activeLottery = lotteryGames.find((g) => g.id === activeGame);
 
   return (
@@ -99,16 +81,13 @@ const Index = () => {
       <EmailModal open={!email} onSubmit={handleEmailSubmit} />
       <Header dark={dark} onToggleDark={toggleDark} email={email} onChangeEmail={handleChangeEmail} />
 
-
-      <main className="container py-4 space-y-4 max-w-lg mx-auto">
-        {activeGame === null && <BreakingNews onSelectGame={setActiveGame} />}
-
+      <main className="container py-6 space-y-6 max-w-lg mx-auto">
         {activeGame === null && (
           <>
             {/* Jogo do Bicho - Single image button */}
             <section className="space-y-3">
               <h3 className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
-                {t("animal_game")}
+                🎲 Jogo do Bicho
               </h3>
               <div className="flex flex-col items-center gap-1">
                 <button
@@ -121,7 +100,7 @@ const Index = () => {
                   onClick={() => setHowToPlay("bicho")}
                   className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
                 >
-                  <HelpCircle className="h-3 w-3" /> {t("how_to_play")}
+                  <HelpCircle className="h-3 w-3" /> Como Jogar
                 </button>
               </div>
             </section>
@@ -131,7 +110,7 @@ const Index = () => {
             {/* Dragão da Sorte */}
             <section className="space-y-3">
               <h3 className="text-xs text-red-500 uppercase tracking-widest text-center font-bold">
-                {t("lucky_dragon")}
+                🐉 Dragão da Sorte
               </h3>
               <div className="flex flex-col items-center gap-2">
                 <button
@@ -145,36 +124,64 @@ const Index = () => {
                   onClick={() => setHowToPlay("dragao-sorte")}
                   className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-red-500 transition-colors mt-1"
                 >
-                  <HelpCircle className="h-3 w-3" /> {t("how_to_play")}
+                  <HelpCircle className="h-3 w-3" /> Como Jogar
                 </button>
               </div>
             </section>
 
             <div className="border-t border-border" />
 
-            {/* LOTTERY INTERNATIONAL BANNER */}
+            {/* Loterias Brasileiras */}
             <section className="space-y-3">
               <h3 className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
-                {t("select_country")}
+                🍀 Loterias Brasileiras
               </h3>
-              <div className="flex flex-col items-center gap-1 w-full relative">
-                <button
-                  onClick={() => window.location.href = "/loterias-internacionais"}
-                  className="rounded-xl overflow-hidden w-full max-w-sm transition-all shadow-[0_10px_40px_-10px_rgba(255,215,0,0.5)] hover:scale-[1.03] hover:shadow-[0_10px_50px_-5px_rgba(255,215,0,0.7)] group relative border-2 border-[#FFD700]/50"
-                  style={{ minHeight: '140px' }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
-                  <img
-                    src={lotteryInternationalImg}
-                    alt="Lottery International"
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-x-0 bottom-3 z-20 flex flex-col items-center animate-pulse">
-                    <span className="text-[10px] uppercase font-bold text-[#FFD700] tracking-[0.2em] drop-shadow-lg bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm border border-[#FFD700]/30">
-                      CLIQUE PARA JOGAR!
-                    </span>
+              <div className="grid grid-cols-2 gap-3">
+                {lotteryGames.filter((g) => g.region === "br").map((game) => (
+                  <div key={game.id} className="flex flex-col items-center gap-1">
+                    <button
+                      onClick={() => setActiveGame(game.id)}
+                      className="rounded-xl overflow-hidden w-full bg-card border border-border transition-all shadow-md hover:scale-105 hover:shadow-lg p-2"
+                    >
+                      <img src={gameImages[game.id]} alt={game.name} className="w-full h-28 object-contain" />
+                      <p className="text-xs text-muted-foreground mt-1">R${game.betAmount}</p>
+                    </button>
+                    <button
+                      onClick={() => setHowToPlay(game.id as GameRulesKey)}
+                      className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors mt-0.5"
+                    >
+                      <HelpCircle className="h-3 w-3" /> Como Jogar
+                    </button>
                   </div>
-                </button>
+                ))}
+              </div>
+            </section>
+
+            <div className="border-t border-border" />
+
+            {/* Loterias Americanas */}
+            <section className="space-y-3">
+              <h3 className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
+                🇺🇸 Loterias Americanas
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {lotteryGames.filter((g) => g.region === "us").map((game) => (
+                  <div key={game.id} className="flex flex-col items-center gap-1">
+                    <button
+                      onClick={() => setActiveGame(game.id)}
+                      className="rounded-xl overflow-hidden w-full bg-card border border-border transition-all shadow-md hover:scale-105 hover:shadow-lg p-2"
+                    >
+                      <img src={gameImages[game.id]} alt={game.name} className="w-full h-28 object-contain" />
+                      <p className="text-xs text-muted-foreground mt-1">R${game.betAmount}</p>
+                    </button>
+                    <button
+                      onClick={() => setHowToPlay(game.id as GameRulesKey)}
+                      className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors mt-0.5"
+                    >
+                      <HelpCircle className="h-3 w-3" /> Como Jogar
+                    </button>
+                  </div>
+                ))}
               </div>
             </section>
 
@@ -183,7 +190,7 @@ const Index = () => {
             {/* Outras Categorias */}
             <section className="space-y-3">
               <h3 className="text-xs text-muted-foreground uppercase tracking-widest text-center font-medium">
-                {t("others_title")}
+                🌟 OUTROS
               </h3>
               <div className="flex flex-col items-center gap-1 w-full">
                 <button
@@ -196,7 +203,7 @@ const Index = () => {
                 >
                   <div className="absolute inset-x-0 top-0 h-1/2 bg-white/30 rounded-t-lg"></div>
                   <span className="relative z-10 text-white font-black text-xl italic tracking-wide uppercase drop-shadow-md">
-                    {t("other_bets")}
+                    OUTRAS APOSTAS
                   </span>
                 </button>
               </div>
@@ -235,28 +242,28 @@ const Index = () => {
         {email && (
           <>
             <p className="text-center text-xs text-muted-foreground">
-              {t("playing_as")} <span className="font-medium text-foreground">{email}</span>
+              Apostando como: <span className="font-medium text-foreground">{email}</span>
               {promoCode && <span className="ml-1 text-gold font-bold">({promoCode})</span>}
             </p>
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 py-4">
               {/* Redes Sociais */}
               <div className="flex items-center gap-3">
-                <a href="https://facebook.com/bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all hover:scale-110" title="Facebook BichoCoin">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all hover:scale-110">
                   <Facebook className="w-4 h-4" />
                 </a>
-                <a href="https://instagram.com/bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all hover:scale-110" title="Instagram BichoCoin">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all hover:scale-110">
                   <Instagram className="w-4 h-4" />
                 </a>
-                <a href="https://twitter.com/bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-sky-500 hover:text-white transition-all hover:scale-110" title="Twitter BichoCoin">
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-sky-500 hover:text-white transition-all hover:scale-110">
                   <Twitter className="w-4 h-4" />
                 </a>
-                <a href="https://youtube.com/@bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-red-600 hover:text-white transition-all hover:scale-110" title="YouTube BichoCoin">
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-red-600 hover:text-white transition-all hover:scale-110">
                   <Youtube className="w-4 h-4" />
                 </a>
-                <a href="https://t.me/bichocoin" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-400 hover:text-white transition-all hover:scale-110" title="Telegram BichoCoin">
+                <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-blue-400 hover:text-white transition-all hover:scale-110">
                   <Send className="w-4 h-4" />
                 </a>
-                <a href="mailto:contato@bichocoin.com" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-gray-700 hover:text-white transition-all hover:scale-110" title="E-mail BichoCoin">
+                <a href="mailto:contato@bichocoin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-gray-700 hover:text-white transition-all hover:scale-110">
                   <Mail className="w-4 h-4" />
                 </a>
               </div>
@@ -269,11 +276,11 @@ const Index = () => {
               <div className="flex items-center gap-3">
                 <button onClick={handleAndroidInstall} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-green-600 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
                   <Smartphone className="w-4 h-4" />
-                  <span className="text-xs font-bold">{t("android_app")}</span>
+                  <span className="text-xs font-bold">Android</span>
                 </button>
                 <button onClick={() => setShowInstallModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted hover:bg-zinc-800 hover:text-white transition-all hover:-translate-y-1 shadow-sm">
                   <Apple className="w-4 h-4" />
-                  <span className="text-xs font-bold">{t("apple_app")}</span>
+                  <span className="text-xs font-bold">Apple</span>
                 </button>
               </div>
             </div>

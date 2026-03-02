@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Wallet } from "lucide-react";
+import { Copy, Check } from "lucide-react";
 import { bichoQRCodes, lotteryQRCodes } from "@/data/qrCodes";
 
 interface Props {
@@ -11,7 +11,6 @@ interface Props {
   amount: number;
   gameId?: string;
   bichoCategory?: string;
-  customTitle?: string;
 }
 
 const bichoMultipliers: Record<string, { label: string; multiplier: number }> = {
@@ -26,12 +25,12 @@ const dragaoMultipliers: Record<string, { label: string; multiplier: number }> =
   dezena: { label: "Dezena (Dragão)", multiplier: 60 },
 };
 
-const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoCategory, customTitle }: Props) => {
+const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoCategory }: Props) => {
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedBet, setCopiedBet] = useState(false);
 
-  const qrConfig = (gameId === "bicho" || gameId === "dragaodasorte" || gameId === "worldcup")
-    ? (bichoQRCodes as any)[amount]
+  const qrConfig = (gameId === "bicho" || gameId === "dragaodasorte")
+    ? bichoQRCodes[amount]
     : lotteryQRCodes[gameId];
 
   let betInfo = null;
@@ -57,29 +56,12 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
     setTimeout(() => setCopiedBet(false), 2000);
   };
 
-  const handleOpenWallet = (e: React.MouseEvent) => {
-    if (!qrConfig) return;
-
-    const lnUrl = `lightning:${qrConfig.copyCode}`;
-
-    // IMPORTANTE: Em alguns navegadores mobile, o window.location.href direto
-    // pode causar erro de "Página não encontrada" se o app não responder rápido.
-    // Usar um link invisível ou window.open pode ser mais seguro.
-
-    // Tenta abrir em uma nova aba/janela para evitar que a página atual caia em erro
-    window.open(lnUrl, '_self');
-
-    // Se ainda der erro de página, o problema pode ser o navegador tentando carregar o protocolo.
-    // O fallback é sempre o Copiar QR que já está na tela.
-  };
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-center font-display text-lg flex items-center justify-center gap-2">
-            <Wallet className="w-5 h-5 text-yellow-500" />
-            Pagamento Privado
+          <DialogTitle className="text-center font-display text-lg">
+            ⚡ Bitcoin Lightning Network
           </DialogTitle>
         </DialogHeader>
 
@@ -94,12 +76,6 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
             </div>
           )}
 
-          {customTitle && (
-            <p className="text-center text-sm font-bold text-primary">
-              {customTitle} — R${amount}
-            </p>
-          )}
-
           {betInfo && (
             <p className="text-center text-xs text-muted-foreground">
               {betInfo.label} — Se acertar: <span className="font-bold text-gold">R${potentialWin}</span> ({betInfo.multiplier}x)
@@ -111,38 +87,22 @@ const QRCodeModal = ({ open, onClose, memoText, amount, gameId = "bicho", bichoC
             <p className="text-xs font-mono font-bold text-foreground break-all">{memoText}</p>
           </div>
 
-          <div className="grid grid-cols-1 gap-2">
-            <a
-              href={`lightning:${qrConfig?.copyCode || ""}`}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full py-4 text-sm bg-yellow-500 hover:bg-yellow-600 text-black font-black border-none shadow-lg animate-pulse hover:animate-none group rounded-md flex items-center justify-center no-underline transition-all active:scale-95"
+          <div className="flex gap-2">
+            <Button
+              className="flex-1 text-xs bg-blue-600 hover:bg-blue-700 text-white border-none"
+              onClick={handleCopyCode}
             >
-              <Wallet className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              ABRIR NA CARTEIRA
-            </a>
-
-            <div className="flex gap-2">
-              <Button
-                className="flex-1 text-[10px] bg-blue-600 hover:bg-blue-700 text-white border-none h-9"
-                onClick={handleCopyCode}
-              >
-                {copiedCode ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
-                {copiedCode ? "Copiado!" : "Copiar QR"}
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1 text-[10px] h-9"
-                onClick={handleCopyBet}
-              >
-                {copiedBet ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
-                {copiedBet ? "Copiado!" : "Copiar Memo"}
-              </Button>
-            </div>
-          </div>
-
-          <div className="bg-yellow-500/10 border border-yellow-500/20 p-2 rounded text-[9px] text-center text-yellow-600 dark:text-yellow-400">
-            Dica: Se o seu navegador der erro ao abrir o app, use o botão **"Copiar QR"** e cole manualmente na sua carteira. Isso acontece em conexões locais sem SSL.
+              {copiedCode ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
+              {copiedCode ? "Copiado!" : "Copiar QR Code"}
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1 text-xs"
+              onClick={handleCopyBet}
+            >
+              {copiedBet ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
+              {copiedBet ? "Copiado!" : "Copiar Aposta"}
+            </Button>
           </div>
 
           <Button variant="ghost" className="w-full text-xs" onClick={onClose}>

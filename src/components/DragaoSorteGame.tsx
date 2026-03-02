@@ -34,7 +34,8 @@ const DragaoSorteGame = ({ email, onBack, initialCategory = "grupo", promoCode =
         drawDays: [0, 1, 2, 3, 4, 5, 6],
         drawTimes: [
             { hour: 13, minute: 50 },
-            { hour: 19, minute: 50 }
+            { hour: 19, minute: 50 },
+            { hour: 23, minute: 30 }
         ]
     });
 
@@ -101,7 +102,8 @@ const DragaoSorteGame = ({ email, onBack, initialCategory = "grupo", promoCode =
                     drawDays: [0, 1, 2, 3, 4, 5, 6],
                     drawTimes: [
                         { hour: 13, minute: 50 },
-                        { hour: 19, minute: 50 }
+                        { hour: 19, minute: 50 },
+                        { hour: 23, minute: 30 }
                     ]
                 }}
             />
@@ -114,8 +116,7 @@ const DragaoSorteGame = ({ email, onBack, initialCategory = "grupo", promoCode =
                         className={`py-2 rounded-md text-sm font-display font-semibold tracking-wide transition-all ${category === cat.key
                             ? "bg-red-600 text-white shadow-sm"
                             : "text-muted-foreground hover:text-foreground"
-                            } ${!bettingOpen ? "opacity-50 cursor-not-allowed" : ""}`}
-                        disabled={!bettingOpen}
+                            }`}
                     >
                         {cat.label}
                     </button>
@@ -123,11 +124,11 @@ const DragaoSorteGame = ({ email, onBack, initialCategory = "grupo", promoCode =
             </div>
 
             {category === "grupo" && !selectedAnimal && (
-                <DragaoAnimalGrid line={line} onSelect={setSelectedAnimal} disabled={!bettingOpen} />
+                <DragaoAnimalGrid line={line} onSelect={setSelectedAnimal} />
             )}
 
             {category === "dezena" && !isDezenaSelected && (
-                <DragaoAnimalGrid line={line} onSelect={() => { }} showDezenas onSelectDezena={handleSelectDezena} disabled={!bettingOpen} />
+                <DragaoAnimalGrid line={line} onSelect={() => { }} showDezenas onSelectDezena={handleSelectDezena} />
             )}
 
             {showBetSelector && !showQR && (

@@ -5,10 +5,9 @@ interface Props {
     onSelect: (animal: ChineseAnimal) => void;
     showDezenas?: boolean;
     onSelectDezena?: (animal: ChineseAnimal, dezena: string) => void;
-    disabled?: boolean;
 }
 
-const DragaoAnimalGrid = ({ line, onSelect, showDezenas, onSelectDezena, disabled }: Props) => {
+const DragaoAnimalGrid = ({ line, onSelect, showDezenas, onSelectDezena }: Props) => {
     if (showDezenas) {
         return (
             <div className="space-y-3">
@@ -27,8 +26,7 @@ const DragaoAnimalGrid = ({ line, onSelect, showDezenas, onSelectDezena, disable
                                     <button
                                         key={dz}
                                         onClick={() => onSelectDezena?.(animal, dz)}
-                                        disabled={disabled}
-                                        className={`px-3 py-2 rounded-md bg-muted text-foreground text-sm font-mono font-bold transition-all ${disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600 hover:text-white hover:scale-105"}`}
+                                        className="px-3 py-2 rounded-md bg-muted text-foreground text-sm font-mono font-bold hover:bg-red-600 hover:text-white transition-all hover:scale-105"
                                     >
                                         {dz}
                                     </button>
@@ -51,8 +49,7 @@ const DragaoAnimalGrid = ({ line, onSelect, showDezenas, onSelectDezena, disable
                     <button
                         key={animal.group}
                         onClick={() => onSelect(animal)}
-                        disabled={disabled}
-                        className={`flex flex-col items-center p-3 rounded-xl bg-card border border-border transition-all ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-red-500 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:scale-105"}`}
+                        className="flex flex-col items-center p-3 rounded-xl bg-card border border-border hover:border-red-500 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all hover:scale-105"
                     >
                         <span className="text-3xl">{animal.emoji}</span>
                         <span className="text-xs font-display font-bold text-foreground mt-2">{animal.name}</span>
