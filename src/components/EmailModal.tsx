@@ -14,8 +14,12 @@ const EmailModal = ({ open, onSubmit }: Props) => {
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("bichocoin_email");
+    const savedPromo = localStorage.getItem("bichocoin_promo");
     if (savedEmail) {
       setEmail(savedEmail);
+    }
+    if (savedPromo) {
+      setPromoCode(savedPromo);
     }
   }, []);
 
@@ -26,6 +30,7 @@ const EmailModal = ({ open, onSubmit }: Props) => {
 
     if (isValidEmail && isValidPromo) {
       localStorage.setItem("bichocoin_email", email);
+      localStorage.setItem("bichocoin_promo", promoCode.toUpperCase());
       onSubmit(email, promoCode.toUpperCase());
     }
   };

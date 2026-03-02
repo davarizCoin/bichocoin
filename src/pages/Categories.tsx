@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Film, Trophy, Vote, Gamepad2, CloudSnow, TrendingUp, Cpu, Award, Tv, Rocket } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const categories = [
     { id: "esportes", name: "ESPORTES", icon: Trophy, desc: "Futebol, Basquete..." },
@@ -18,17 +19,30 @@ const categories = [
 const Categories = () => {
     const navigate = useNavigate();
 
+    const handleNavigate = (id: string, name: string) => {
+        if (id === "politica") {
+            navigate("/politica");
+        } else if (id === "esportes") {
+            navigate("/esportes");
+        } else {
+            alert(`Apostas para ${name} em breve!`);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-background transition-colors p-4 pb-20">
             <div className="max-w-lg mx-auto relative mt-6">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate("/")}
-                    className="absolute -top-10 left-0 text-muted-foreground z-10"
-                >
-                    <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
-                </Button>
+                <div className="flex justify-between items-center absolute -top-10 left-0 right-0 z-10">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate("/")}
+                        className="text-muted-foreground"
+                    >
+                        <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
+                    </Button>
+                    <ThemeToggle />
+                </div>
 
                 <div className="text-center mb-8">
                     <h2 className="text-2xl font-display font-bold text-foreground">Outras Categorias</h2>
@@ -41,7 +55,7 @@ const Categories = () => {
                         return (
                             <button
                                 key={cat.id}
-                                onClick={() => cat.id === "politica" ? navigate("/politica") : alert(`Apostas para ${cat.name} em breve!`)}
+                                onClick={() => handleNavigate(cat.id, cat.name)}
                                 className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-card border border-border shadow-md hover:border-primary hover:shadow-lg transition-all hover:-translate-y-1 h-28"
                             >
                                 <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">

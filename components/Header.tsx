@@ -2,7 +2,6 @@ import { Moon, Sun, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageCode } from "@/locales/translations";
-import logo from "@/assets/bichocoin-logo.jpg";
 
 interface Props {
   dark: boolean;
@@ -25,11 +24,11 @@ const Header = ({ dark, onToggleDark, email, onChangeEmail }: Props) => {
           )}
         </div>
         <div className="flex flex-col items-center">
-          <img
-            src={logo}
-            alt="BichoCoin Logo"
-            className="h-36 w-auto object-contain transition-all duration-300 hover:scale-105 hover:-rotate-2 active:scale-95 drop-shadow-md brightness-110 contrast-105"
-          />
+          <h1 className="text-xl font-display font-bold tracking-wide text-foreground cursor-default select-none">
+            <span className="text-base mr-0.5">🎲</span>
+            BichoCoin<span className="text-[8px] align-top">.com</span>
+          </h1>
+          <p className="text-[15px] italic text-muted-foreground -mt-1">{t("slogan")}</p>
         </div>
         <div className="flex items-center gap-1">
           <div className="relative group">
